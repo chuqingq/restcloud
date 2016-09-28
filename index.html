@@ -302,7 +302,7 @@
                         </div>
                         <input class="form-control" v-model="data.current.url">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-default">Params</button>
+                            <button type="button" class="btn btn-default" @click="showParams()">Params</button>
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Send <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
                               <li><a href="#">Action</a></li>
@@ -334,7 +334,7 @@
                     </div>
                 </div>
 
-                <div class="form-group" v-for="p in data.current.params">
+                <div class="form-group" v-if="data.current.showParams==true" v-for="p in data.current.params">
                     <div class="row">
                         <div class="col-lg-4">
                             <input class="form-control" placeholder="param name" v-model="p.name">
@@ -343,17 +343,6 @@
                             <input class="form-control" placeholder="param value" v-model="p.value">
                         </div>
                         <a class="btn fa fa-times"></a>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <input class="form-control" placeholder="param name">
-                        </div>
-                        <div class="col-lg-4">
-                            <input class="form-control" placeholder="param value">
-                        </div>
                     </div>
                 </div>
 
@@ -412,9 +401,11 @@
                     name: 'POST /push/_allot_pusher',
                     method: 'POST',
                     url: 'https://baseurl/push/_allot_pusher',
+                    showParams: true,
                     params: [
                         {name: "paramA", value: 123},
-                        {name: "paramB", value: "456"}
+                        {name: "paramB", value: "456"},
+                        {name: "", value: ""}
                     ],
                     authorization: 'this is authorization',
                     body: 'this is body',
@@ -518,6 +509,9 @@
                 methods: {
                     selectMethod: function(method) {
                         data.current.method = method;
+                    },
+                    showParams: function() {
+                        data.current.showParams = !!!data.current.showParams;
                     }
                 }
             });
