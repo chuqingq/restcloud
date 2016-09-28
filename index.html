@@ -294,10 +294,10 @@
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{data.current.method}} <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
-                              <li><a href="#">GET</a></li>
-                              <li><a href="#">POST</a></li>
-                              <li><a href="#">PUT</a></li>
-                              <li><a href="#">DELETE</a></li><!-- TODO -->
+                              <li><a @click="selectMethod('GET')" href="#">GET</a></li>
+                              <li><a @click="selectMethod('POST')" href="#">POST</a></li>
+                              <li><a @click="selectMethod('PUT')" href="#">PUT</a></li>
+                              <li><a @click="selectMethod('DELETE')" href="#">DELETE</a></li>
                             </ul>
                         </div>
                         <input class="form-control" v-model="data.current.url">
@@ -334,25 +334,25 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" v-for="p in data.current.params">
                     <div class="row">
                         <div class="col-lg-4">
-                            <input class="form-control" placeholder="key">
+                            <input class="form-control" placeholder="param name" v-model="p.name">
                         </div>
                         <div class="col-lg-4">
-                            <input class="form-control" placeholder="value">
+                            <input class="form-control" placeholder="param value" v-model="p.value">
                         </div>
-                        <button type="button" class="btn btn-default">Delete</button>
+                        <a class="btn fa fa-times"></a>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="row">
                         <div class="col-lg-4">
-                            <input class="form-control" placeholder="key">
+                            <input class="form-control" placeholder="param name">
                         </div>
                         <div class="col-lg-4">
-                            <input class="form-control" placeholder="value">
+                            <input class="form-control" placeholder="param value">
                         </div>
                     </div>
                 </div>
@@ -412,6 +412,10 @@
                     name: 'POST /push/_allot_pusher',
                     method: 'POST',
                     url: 'https://baseurl/push/_allot_pusher',
+                    params: [
+                        {name: "paramA", value: 123},
+                        {name: "paramB", value: "456"}
+                    ],
                     authorization: 'this is authorization',
                     body: 'this is body',
                     tests: 'this is tests'
@@ -510,6 +514,11 @@
                 data: {data: data},
                 watch: {
                     // selected: function(val) {}
+                },
+                methods: {
+                    selectMethod: function(method) {
+                        data.current.method = method;
+                    }
                 }
             });
         });
