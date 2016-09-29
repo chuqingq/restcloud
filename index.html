@@ -294,22 +294,22 @@
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{data.current.method}} <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
-                              <li><a @click="selectMethod('GET')" href="#">GET</a></li>
-                              <li><a @click="selectMethod('POST')" href="#">POST</a></li>
-                              <li><a @click="selectMethod('PUT')" href="#">PUT</a></li>
-                              <li><a @click="selectMethod('DELETE')" href="#">DELETE</a></li>
+                              <li><a @click="data.current.method='GET';" href="#">GET</a></li>
+                              <li><a @click="data.current.method='POST';" href="#">POST</a></li>
+                              <li><a @click="data.current.method='PUT';" href="#">PUT</a></li>
+                              <li><a @click="data.current.method='DELETE';" href="#">DELETE</a></li>
                             </ul>
                         </div>
                         <input class="form-control" v-model="data.current.url">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-default" @click="showParams()">Params</button>
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Send <span class="caret"></span></button>
-                            <ul class="dropdown-menu" role="menu">
-                              <li><a href="#">Action</a></li>
-                              <li><a href="#">Another action</a></li>
-                              <li><a href="#">Something else here</a></li>
+                            <!-- <button type="button" class="btn btn-default" :class="{active: data.current.showParams}" @click="showParams()">Params</button> -->
+                            <button type="button" class="btn btn-primary" @click="send()">Send</button>
+                            <a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                              <li><a href="#">Send</a></li>
+                              <li><a href="#">Send and download</a></li>
                               <li class="divider"></li>
-                              <li><a href="#">Separated link</a></li>
+                              <li><a href="#">Save</a></li>
                             </ul><!-- 
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Save <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
@@ -347,19 +347,34 @@
                 </div>
 
                 <div class="form-group">
-                    <ul class="nav nav-pills" role="tablist">
-                      <li class="active"><a href="#">Authorization</a></li>
-                      <li><a href="#">Headers</a></li>
-                      <li><a href="#">Body</a></li>
-                      <li><a href="#">Pre-request Script</a></li>
-                      <li><a href="#">Tests</a></li>
+                    <ul class="nav nav-tabs" role="tablist">
+                      <!-- <li @click="data.current.showBody = 1;" :class="{active: data.current.showBody == 1}"><a href="#">Authorization</a></li> -->
+                      <li @click="data.current.show='headers';" :class="{active: data.current.show=='headers'}"><a href="#">Headers</a></li>
+                      <li @click="data.current.show='body';" :class="{active: data.current.show=='body'}"><a href="#">Body</a></li>
+                      <!-- <li @click="showBody(4)" :class="{active: data.current.showBody == 'Pre-request Script'}"><a href="#">Pre-request Script</a></li> -->
+                      <li @click="data.current.show='tests';" :class="{active: data.current.show=='tests'}"><a href="#">Tests</a></li>
                     </ul>
                 </div>
 
-                <div class="form-group">
-                    <textarea class="form-control" rows=3>Authorization</textarea>
+                <div class="form-group" v-if="data.current.show=='headers'" v-for="h in data.current.headers">
+                     <div class="row">
+                        <div class="col-lg-4">
+                            <input class="form-control" placeholder="header name" v-model="h.name">
+                        </div>
+                        <div class="col-lg-4">
+                            <input class="form-control" placeholder="header value" v-model="h.value">
+                        </div>
+                        <a class="btn fa fa-times"></a>
+                    </div>
                 </div>
 
+                <div class="form-group" v-if="data.current.show=='body'">
+                    <textarea class="form-control" rows=10 v-model="data.current.body"></textarea>
+                </div>
+
+                <div class="form-group" v-if="data.current.show=='tests'">
+                    <textarea class="form-control" rows=10 v-model="data.current.tests"></textarea>
+                </div>
             </div>
             <!-- /.row -->
         </div>
@@ -385,8 +400,8 @@
 
     <script type="text/x-template" id="item-template">
         <li>
-            <a @click="toggleFolder"><i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': open}"></i> {{model.name}}</a>
-            <ul style="padding-left:1em" class="nav" v-show="open" v-if="isFolder">
+            <a @click="toggleFolder"><i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': model.open}"></i> {{model.name}}</a>
+            <ul style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder">
                 <item v-for="model in model.children" :model="model"></item>
             </ul>
         </li>
@@ -397,17 +412,30 @@
             current: null,
             requests: [{
                 name: 'xpush',
+                open: true,
                 children: [{
                     name: 'POST /push/_allot_pusher',
                     method: 'POST',
-                    url: 'https://baseurl/push/_allot_pusher',
-                    showParams: true,
-                    params: [
-                        {name: "paramA", value: 123},
-                        {name: "paramB", value: "456"},
-                        {name: "", value: ""}
-                    ],
+                    url: 'https://baseurl/push/_allot_pusher?paramA=123&paramB=456',
+                    // showParams: true,
+                    // params: [
+                    //     {name: "paramA", value: 123},
+                    //     {name: "paramB", value: "456"},
+                    //     {name: "", value: ""}
+                    // ],
+                    show: 'headers',
                     authorization: 'this is authorization',
+                    headers: [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json",
+                            "description": ""
+                        }, {
+                            "name": "",
+                            "value": "",
+                            "description": ""
+                        }
+                    ],
                     body: 'this is body',
                     tests: 'this is tests'
                 }, {
@@ -419,6 +447,7 @@
                     tests: 'this is tests'
                 }, {
                     name: 'query status',
+                    open: false,
                     children: [{
                         name: 'GET /push/device_status',
                         method: 'POST',
@@ -437,6 +466,7 @@
                 }]
             }, {
                 name: 'lfs',
+                open: false,
                 children: [{
                     name: 'POST /lfs/_allot_pusher',
                     method: 'POST',
@@ -453,6 +483,7 @@
                     tests: 'this is tests'
                 }, {
                     name: 'query status',
+                    open: false,
                     children: [{
                         name: 'GET /lfs/device_status',
                         method: 'POST',
@@ -479,7 +510,8 @@
                     model: Object
                 },
                 data: function () {
-                    return {open: false}
+                    // return {open: false}
+                    return {}
                 },
                 computed: {
                     isFolder: function() {
@@ -490,12 +522,13 @@
                 methods: {
                     toggleFolder: function() {
                         if (this.isFolder) {
-                            this.open = !this.open;
+                            this.model.open = !!!this.model.open;
+                            data.current = null;
                         } else {
                             data.current = this.model;
                             // TODO 如果是文件，则xxx
-                            console.log("click file: " + JSON.stringify(this.model));
                         }
+                        console.log("click: " + JSON.stringify(this.model));
                     }
                 }
             });
@@ -507,13 +540,23 @@
                     // selected: function(val) {}
                 },
                 methods: {
-                    selectMethod: function(method) {
-                        data.current.method = method;
-                    },
                     showParams: function() {
                         data.current.showParams = !!!data.current.showParams;
+                    },
+                    showBody: function(part) {
+                        // data.current.showBody = true;
                     }
                 }
+                // filters: {
+                //     methodFilter: function(method) {
+                //         console.log('method: ' + method + ',');
+                //         while (method.length < 8) {
+                //             method += ' ';
+                //         }
+                //         console.log('method: ' + method + ',');
+                //         return method;
+                //     }
+                // }
             });
         });
     </script>
