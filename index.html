@@ -370,7 +370,7 @@
                 <div class="form-group" v-if="data.current.show=='headers'">
                      <div class="row">
                         <div class="col-lg-4">
-                            <input id="headerName" @blur="addHeader()" class="form-control" placeholder="header name">
+                            <input id="headerName" class="form-control" placeholder="header name">
                         </div>
                         <div class="col-lg-4">
                             <input id="headerValue" @blur="addHeader()" class="form-control" placeholder="header value">
@@ -441,8 +441,8 @@
                             "value": "application/json",
                             "description": ""
                         }, {
-                            "name": "",
-                            "value": "",
+                            "name": "User-Token",
+                            "value": "123123123123123123",
                             "description": ""
                         }
                     ],
