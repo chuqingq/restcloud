@@ -356,7 +356,7 @@
                     </ul>
                 </div>
 
-                <div class="form-group" v-if="data.current.show=='headers'" v-for="h in data.current.headers">
+                <div class="form-group" v-if="data.current.show=='headers'" v-for="(h, index) in data.current.headers">
                      <div class="row">
                         <div class="col-lg-4">
                             <input class="form-control" placeholder="header name" v-model="h.name">
@@ -364,7 +364,17 @@
                         <div class="col-lg-4">
                             <input class="form-control" placeholder="header value" v-model="h.value">
                         </div>
-                        <a class="btn fa fa-times"></a>
+                        <a @click="delHeader(index)" class="btn fa fa-times"></a>
+                    </div>
+                </div>
+                <div class="form-group" v-if="data.current.show=='headers'">
+                     <div class="row">
+                        <div class="col-lg-4">
+                            <input id="headerName" @blur="addHeader()" class="form-control" placeholder="header name">
+                        </div>
+                        <div class="col-lg-4">
+                            <input id="headerValue" @blur="addHeader()" class="form-control" placeholder="header value">
+                        </div>
                     </div>
                 </div>
 
@@ -545,6 +555,20 @@
                     },
                     showBody: function(part) {
                         // data.current.showBody = true;
+                    },
+                    addHeader: function() {
+                        var headerName = $('#headerName').val();
+                        var headerValue = $('#headerValue').val();
+
+                        if (headerName.trim() != '' || headerValue.trim() != '') {
+                            data.current.headers = data.current.headers.concat([{name: headerName, value: headerValue}]);
+                            $('#headerName').val('');
+                            $('#headerValue').val('');
+                        }
+                    },
+                    delHeader: function(index) {
+                        console.log('delHeader(): ' + index);
+                        data.current.headers.splice(index, 1);
                     }
                 }
                 // filters: {
