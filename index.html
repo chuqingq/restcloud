@@ -407,7 +407,10 @@
 
     <script type="text/x-template" id="item-template">
         <li>
-            <a @click="toggleFolder" :class="{'active': active}"><i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': model.open}"></i> {{model.name}}</a>
+            <a @click="toggleFolder" :class="{'active': active}">
+                <i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': model.open}"></i>
+                {{model.name}}
+            </a>
             <ul style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder">
                 <item v-for="model in model.children" :model="model"></item>
             </ul>
@@ -419,7 +422,7 @@
             current: null,
             requests: [{
                 name: 'xpush',
-                open: true,
+                // open: true,
                 children: [{
                     name: 'POST /push/_allot_pusher',
                     method: 'POST',
@@ -454,7 +457,7 @@
                     tests: 'this is tests'
                 }, {
                     name: 'query status',
-                    open: false,
+                    // open: false,
                     children: [{
                         name: 'GET /push/device_status',
                         method: 'POST',
@@ -473,7 +476,7 @@
                 }]
             }, {
                 name: 'lfs',
-                open: false,
+                // open: false,
                 children: [{
                     name: 'POST /lfs/_allot_pusher',
                     method: 'POST',
@@ -490,7 +493,7 @@
                     tests: 'this is tests'
                 }, {
                     name: 'query status',
-                    open: false,
+                    // open: false,
                     children: [{
                         name: 'GET /lfs/device_status',
                         method: 'POST',
@@ -516,10 +519,10 @@
                 props: {
                     model: Object
                 },
-                data: function () {
-                    // return {open: false}
-                    return {}
-                },
+                // data: function () {
+                //     // return {open: false}
+                //     return {}
+                // },
                 computed: {
                     isFolder: function() {
                         return this.model.children &&
@@ -532,13 +535,13 @@
                 methods: {
                     toggleFolder: function() {
                         if (this.isFolder) {
-                            this.model.open = !!!this.model.open;
+                            // this.model.open = !!!this.model.open;
+                            vm.$set(this.model, 'open', !!!this.model.open);
                             data.current = null;
                         } else {
                             data.current = this.model;
                             // TODO 如果是文件，则xxx
                         }
-                        console.log("click: " + JSON.stringify(this.model));
                     }
                 }
             });
