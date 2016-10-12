@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,9 +32,7 @@
 </head>
 
 <body>
-
     <div id="wrapper">
-
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -410,7 +407,7 @@
 
     <script type="text/x-template" id="item-template">
         <li>
-            <a @click="toggleFolder"><i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': model.open}"></i> {{model.name}}</a>
+            <a @click="toggleFolder" :class="{'active': active}"><i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': model.open}"></i> {{model.name}}</a>
             <ul style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder">
                 <item v-for="model in model.children" :model="model"></item>
             </ul>
@@ -527,6 +524,9 @@
                     isFolder: function() {
                         return this.model.children &&
                             this.model.children.length
+                    },
+                    active: function() {
+                        return this.model == data.current
                     }
                 },
                 methods: {
