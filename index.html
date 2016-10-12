@@ -346,14 +346,14 @@
                 <div class="form-group">
                     <ul class="nav nav-tabs" role="tablist">
                       <!-- <li @click="data.current.showBody = 1;" :class="{active: data.current.showBody == 1}"><a href="#">Authorization</a></li> -->
-                      <li @click="data.current.show='headers';" :class="{active: data.current.show=='headers'}"><a href="#">Headers</a></li>
-                      <li @click="data.current.show='body';" :class="{active: data.current.show=='body'}"><a href="#">Body</a></li>
+                      <li @click="showBody('headers');" :class="{active: data.current.showBody==null||data.current.showBody=='headers'}"><a href="#">Headers</a></li>
+                      <li @click="showBody('body');" :class="{active: data.current.showBody=='body'}"><a href="#">Body</a></li>
                       <!-- <li @click="showBody(4)" :class="{active: data.current.showBody == 'Pre-request Script'}"><a href="#">Pre-request Script</a></li> -->
-                      <li @click="data.current.show='tests';" :class="{active: data.current.show=='tests'}"><a href="#">Tests</a></li>
+                      <li @click="showBody('tests');" :class="{active: data.current.showBody=='tests'}"><a href="#">Tests</a></li>
                     </ul>
                 </div>
 
-                <div class="form-group" v-if="data.current.show=='headers'" v-for="(h, index) in data.current.headers">
+                <div class="form-group" v-if="data.current.showBody==null||data.current.showBody=='headers'" v-for="(h, index) in data.current.headers">
                      <div class="row">
                         <div class="col-lg-4">
                             <input class="form-control" placeholder="header name" v-model="h.name">
@@ -364,7 +364,7 @@
                         <a @click="delHeader(index)" class="btn fa fa-times"></a>
                     </div>
                 </div>
-                <div class="form-group" v-if="data.current.show=='headers'">
+                <div class="form-group" v-if="data.current.showBody==null||data.current.showBody=='headers'">
                      <div class="row">
                         <div class="col-lg-4">
                             <input id="headerName" class="form-control" placeholder="header name">
@@ -375,11 +375,11 @@
                     </div>
                 </div>
 
-                <div class="form-group" v-if="data.current.show=='body'">
+                <div class="form-group" v-if="data.current.showBody=='body'">
                     <textarea class="form-control" rows=10 v-model="data.current.body"></textarea>
                 </div>
 
-                <div class="form-group" v-if="data.current.show=='tests'">
+                <div class="form-group" v-if="data.current.showBody=='tests'">
                     <textarea class="form-control" rows=10 v-model="data.current.tests"></textarea>
                 </div>
             </div>
@@ -430,7 +430,7 @@
                     //     {name: "paramB", value: "456"},
                     //     {name: "", value: ""}
                     // ],
-                    show: 'headers',
+                    show: 'headers', // 可选
                     authorization: 'this is authorization',
                     headers: [
                         {
@@ -543,7 +543,7 @@
                 }
             });
 
-            new Vue({
+            var vm = new Vue({
                 el: '#wrapper',
                 data: {data: data},
                 watch: {
@@ -554,7 +554,8 @@
                         data.current.showParams = !!!data.current.showParams;
                     },
                     showBody: function(part) {
-                        // data.current.showBody = true;
+                        // part是"headers"、"body"或"tests"
+                        vm.$set(data.current, 'showBody', part);
                     },
                     addHeader: function() {
                         var headerName = $('#headerName').val();
@@ -570,17 +571,16 @@
                         console.log('delHeader(): ' + index);
                         data.current.headers.splice(index, 1);
                     }
+                },
+                computed: {
+                    isFolder: function() {
+                        return this.model.children &&
+                            this.model.children.length
+                    },
+                    active: function() {
+                        return this.model == data.current
+                    }
                 }
-                // filters: {
-                //     methodFilter: function(method) {
-                //         console.log('method: ' + method + ',');
-                //         while (method.length < 8) {
-                //             method += ' ';
-                //         }
-                //         console.log('method: ' + method + ',');
-                //         return method;
-                //     }
-                // }
             });
         });
     </script>
