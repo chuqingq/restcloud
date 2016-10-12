@@ -565,6 +565,7 @@
                         var headerValue = $('#headerValue').val();
 
                         if (headerName.trim() != '' || headerValue.trim() != '') {
+                            if (data.current.headers == null) vm.$set(data.current, 'headers', []);
                             data.current.headers = data.current.headers.concat([{name: headerName, value: headerValue}]);
                             $('#headerName').val('');
                             $('#headerValue').val('');
