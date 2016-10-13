@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>postman</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="./vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <!-- <link href="./vendor/metisMenu/metisMenu.min.css" rel="stylesheet"> -->
+
+    <!-- Custom CSS -->
+    <!-- <link href="./dist/css/sb-admin-2.css" rel="stylesheet"> -->
+
+    <!-- Custom Fonts -->
+    <link href="./vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">postman</a>
+        </div>
+    </nav>
+
+    <div id="wrapper" class="row">
+        <!-- left tree -->
+        <div class="col-sm-2">
+            <item v-for="model in data.requests" :model="model">
+            </item>
+        </div>
+
+        <div id="page-wrapper" class="col-sm-10">
+            <p>
+            <!-- name -->
+            <div class="row form-group" >
+                <input class="form-control" v-if="data.current!=null" v-model="data.current.name">
+            </div>
+
+            <!-- url -->
+            <div class="row" v-if="data.current!=null&&data.current.children==null">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="width: 100px">{{data.current.method}} <span class="caret"></span></button>
+                            <ul class="dropdown-menu" role="menu">
+                              <li><a @click="data.current.method='GET';" href="#">GET</a></li>
+                              <li><a @click="data.current.method='POST';" href="#">POST</a></li>
+                              <li><a @click="data.current.method='PUT';" href="#">PUT</a></li>
+                              <li><a @click="data.current.method='DELETE';" href="#">DELETE</a></li>
+                            </ul>
+                        </div>
+                        <input class="form-control" v-model="data.current.url">
+                        <div class="input-group-btn">
+                            <!-- <button type="button" class="btn btn-default" :class="{active: data.current.showParams}" @click="showParams()">Params</button> -->
+                            <button type="button" class="btn btn-primary" @click="send()">Send</button>
+                            <a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                              <li><a href="#">Send</a></li>
+                              <li><a href="#">Send and download</a></li>
+                              <li class="divider"></li>
+                              <li><a href="#">Save</a></li>
+                            </ul>
+                        </div><!-- /btn-group -->
+                    </div>
+                </div>
+
+                <!-- params -->
+                <div v-if="data.current.showParams==true">
+                    <div class="form-group" v-for="(p, index) in data.current.params">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <input class="form-control" placeholder="param name" v-model="p.name">
+                            </div>
+                            <div class="col-lg-4">
+                                <input class="form-control" placeholder="param value" v-model="p.value">
+                            </div>
+                            <a class="btn fa fa-times"></a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <input class="form-control" placeholder="param name">
+                            </div>
+                            <div class="col-lg-4">
+                                <input @blur="addParam()" class="form-control" placeholder="param value">
+                            </div>
+                            <a class="btn fa fa-times"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- bodyTabs -->
+                <div class="form-group">
+                    <ul class="nav nav-tabs" role="tablist" id="bodyTabs">
+                      <li @click="showBody('headers');" :class="{active: data.current.showBody==null||data.current.showBody=='headers'}"><a href="#headers">Headers</a></li>
+                      <li @click="showBody('body');" :class="{active: data.current.showBody=='body'}"><a href="#body">Body</a></li>
+                      <li @click="showBody('tests');" :class="{active: data.current.showBody=='tests'}"><a href="#tests">Tests</a></li>
+                    </ul>
+                </div>
+
+                <fieldset>
+                    <div class="tab-content">
+                        <div class="tab-pane" id="body">
+                            <textarea class="form-control" rows=10 v-model="data.current.body"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- headers -->
+                <div v-if="data.current.showBody==null||data.current.showBody=='headers'">
+                    <div class="form-group" v-for="(h, index) in data.current.headers">
+                         <div class="row">
+                            <div class="col-lg-4">
+                                <input class="form-control" placeholder="header name" v-model="h.name">
+                            </div>
+                            <div class="col-lg-4">
+                                <input class="form-control" placeholder="header value" v-model="h.value">
+                            </div>
+                            <a @click="delHeader(index)" class="btn fa fa-times"></a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                         <div class="row">
+                            <div class="col-lg-4">
+                                <input id="headerName" class="form-control" placeholder="header name">
+                            </div>
+                            <div class="col-lg-4">
+                                <input id="headerValue" @blur="addHeader()" class="form-control" placeholder="header value">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- body -->
+                <div class="form-group" v-if="data.current.showBody=='body'">
+                    <textarea class="form-control" rows=10 v-model="data.current.body"></textarea>
+                </div>
+
+                <!-- tests -->
+                <div class="form-group" v-if="data.current.showBody=='tests'">
+                    <textarea class="form-control" rows=10 v-model="data.current.tests"></textarea>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+
+    <!-- /#wrapper -->
+
+    <script src="./vendor/vuejs/vue.js"></script>
+
+    <!-- jQuery -->
+    <!-- <script>window.$ = window.jQuery = require('./vendor/jquery/jquery.min.js');</script> -->
+    <script src="./vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="./vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <!-- <script src="./dist/js/sb-admin-2.js"></script> -->
+
+    <script type="text/x-template" id="item-template">
+        <li>
+            <a @click="toggleFolder" :class="{'active': selected}">
+                <!-- <i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': model.open}"></i> -->
+                {{model.name}}
+                <!-- <div class="dropdown-sm">
+                    <a id="dropdownMenu2" v-if="selected" class="glyphicon glyphicon-option-vertical dropdown-toggle" data-toggle="dropdown" style="float:right" href="#">
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </div> -->
+            </a>
+            <ul style="padding-left:1em" class="nav nav-sidebar" v-show="model.open" v-if="isFolder">
+                <item v-for="model in model.children" :model="model"></item>
+            </ul>
+        </li>
+    </script>
+
+    <script type="text/javascript">
+        // boostrap.js相关
+        // $('#bodyTabs a').click(function (e) {
+        //     console.log('bodytabs a clicked')
+        //     e.preventDefault()
+        //     $(this).tab('show')
+        // });
+
+        // vue.js相关
+        var data = {
+            current: null,
+            requests: [{
+                name: 'xpush',
+                // open: true,
+                children: [{
+                    name: 'POST /push/_allot_pusher',
+                    method: 'POST',
+                    url: 'https://baseurl/push/_allot_pusher?paramA=123&paramB=456',
+                    // showParams: true,
+                    // params: [
+                    //     {name: "paramA", value: 123},
+                    //     {name: "paramB", value: "456"},
+                    //     {name: "", value: ""}
+                    // ],
+                    show: 'headers', // 可选
+                    authorization: 'this is authorization',
+                    headers: [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json",
+                            "description": ""
+                        }, {
+                            "name": "User-Token",
+                            "value": "123123123123123123",
+                            "description": ""
+                        }
+                    ],
+                    body: 'this is body',
+                    tests: 'this is tests'
+                }, {
+                    name: 'POST /push/_single_send',
+                    method: 'POST',
+                    url: 'https://{{baseurl}}/push/_single_send',
+                    authorization: 'this is authorization',
+                    body: 'this is body',
+                    tests: 'this is tests'
+                }, {
+                    name: 'query status',
+                    // open: false,
+                    children: [{
+                        name: 'GET /push/device_status',
+                        method: 'POST',
+                        url: 'https://{{baseurl}}/push/device_status',
+                        authorization: 'this is authorization',
+                        body: 'this is body',
+                        tests: 'this is tests'
+                    }, {
+                        name: 'GET /push/message_status',
+                        method: 'POST',
+                        url: 'https://{{baseurl}}/push/message_status',
+                        authorization: 'this is authorization',
+                        body: 'this is body',
+                        tests: 'this is tests'
+                    }]
+                }]
+            }, {
+                name: 'lfs',
+                // open: false,
+                children: [{
+                    name: 'POST /lfs/_allot_pusher',
+                    method: 'POST',
+                    url: 'https://{{baseurl}}/lfs/_allot_pusher',
+                    authorization: 'this is authorization',
+                    body: 'this is body',
+                    tests: 'this is tests'
+                }, {
+                    name: 'POST /lfs/_single_send',
+                    method: 'POST',
+                    url: 'https://{{baseurl}}/lfs/_single_send',
+                    authorization: 'this is authorization',
+                    body: 'this is body',
+                    tests: 'this is tests'
+                }, {
+                    name: 'query status',
+                    // open: false,
+                    children: [{
+                        name: 'GET /lfs/device_status',
+                        method: 'POST',
+                        url: 'https://{{baseurl}}/lfs/device_status',
+                        authorization: 'this is authorization',
+                        body: 'this is body',
+                        tests: 'this is tests'
+                    }, {
+                        name: 'GET /lfs/message_status',
+                        method: 'POST',
+                        url: 'https://{{baseurl}}/lfs/message_status',
+                        authorization: 'this is authorization',
+                        body: 'this is body',
+                        tests: 'this is tests'
+                    }]
+                }]
+            }]
+        };
+
+        $(function() {
+            Vue.component('item', {
+                template: '#item-template',
+                props: {
+                    model: Object
+                },
+                // data: function () {
+                //     // return {open: false}
+                //     return {}
+                // },
+                computed: {
+                    isFolder: function() {
+                        return this.model.children &&
+                            this.model.children.length
+                    },
+                    selected: function() {
+                        return this.model == data.current
+                    }
+                },
+                methods: {
+                    toggleFolder: function() {
+                        data.current = this.model;
+                        if (this.isFolder) {
+                            // this.model.open = !!!this.model.open;
+                            vm.$set(this.model, 'open', !!!this.model.open);
+                            // data.current = null;
+                        } else {
+                        }
+                    }
+                }
+            });
+
+            var vm = new Vue({
+                el: '#wrapper',
+                data: {data: data},
+                watch: {
+                    // selected: function(val) {}
+                },
+                methods: {
+                    showParams: function() {
+                        console.log('showParams: ', data.current.showParams)
+                        vm.$set(data.current, 'showParams', !!!data.current.showParams);
+                    },
+                    showBody: function(part) {
+                        // part是"headers"、"body"或"tests"
+                        vm.$set(data.current, 'showBody', part);
+                    },
+                    addHeader: function() {
+                        var headerName = $('#headerName').val();
+                        var headerValue = $('#headerValue').val();
+
+                        if (headerName.trim() != '' || headerValue.trim() != '') {
+                            if (data.current.headers == null) vm.$set(data.current, 'headers', []);
+                            data.current.headers = data.current.headers.concat([{name: headerName, value: headerValue}]);
+                            $('#headerName').val('');
+                            $('#headerValue').val('');
+                        }
+                    },
+                    delHeader: function(index) {
+                        console.log('delHeader(): ' + index);
+                        data.current.headers.splice(index, 1);
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
