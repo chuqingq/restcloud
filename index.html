@@ -420,7 +420,7 @@
             <a @click="toggleFolder" :class="{'active': selected}">
                 <i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': model.open}"></i>
                 {{model.name}}
-                <a v-if="selected" class="fa fa-bars" style="float:right"/>
+                <a v-if="selected" class="glyphicon glyphicon-option-vertical" style="float:right"/>
             </a>
             <ul style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder">
                 <item v-for="model in model.children" :model="model"></item>
