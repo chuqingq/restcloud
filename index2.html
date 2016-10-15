@@ -105,7 +105,7 @@
                             <div class="col-md-4">
                                 <input class="form-control" placeholder="param value" v-model="p.value">
                             </div>
-                            <a class="btn fa fa-times"></a>
+                            <a class="btn glyphicon glyphicon-remove"></a>
                         </div>
                     </div>
                     <div class="form-group">
@@ -116,7 +116,7 @@
                             <div class="col-md-4">
                                 <input @blur="addParam()" class="form-control" placeholder="param value">
                             </div>
-                            <a class="btn fa fa-times"></a>
+                            <a class="btn glyphicon glyphicon-remove"></a>
                         </div>
                     </div>
                 </div>
@@ -148,7 +148,7 @@
                             <div class="col-md-4">
                                 <input class="form-control" placeholder="header value" v-model="h.value">
                             </div>
-                            <a @click="delHeader(index)" class="btn fa fa-times"></a>
+                            <a @click="delHeader(index)" class="btn glyphicon glyphicon-remove"></a>
                         </div>
                     </div>
                     <div class="form-group">
@@ -198,7 +198,7 @@
     <script type="text/x-template" id="item-template">
         <li>
             <a @click="toggleFolder">
-                <i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': model.open}"></i>
+                <i class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}"></i>
                 <span>{{model.name}}</span>
                 <i v-if="selected" class="glyphicon glyphicon-option-vertical" style="float:right"></i>
             </a>
