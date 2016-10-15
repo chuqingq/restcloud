@@ -29,6 +29,12 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <style type="text/css">
+        .nav-active-my {
+            color: #FFFFFF;
+            background-color: #428bca;
+        }
+    </style>
 </head>
 
 <body>
@@ -45,14 +51,16 @@
         </div>
     </nav>
 
-    <div id="wrapper" class="row">
+    <div id="wrapper" class="container-fluid" style="padding-left: 0">
         <!-- left tree -->
-        <div class="col-sm-2">
-            <item v-for="model in data.requests" :model="model">
-            </item>
+        <div class="col-md-3" style="padding-left: 0">
+            <ul class="nav">
+                <item v-for="model in data.requests" :model="model">
+                </item>
+            </ul>
         </div>
 
-        <div id="page-wrapper" class="col-sm-10">
+        <div id="page-wrapper" class="col-md-9">
             <p>
             <!-- name -->
             <div class="row form-group" >
@@ -91,10 +99,10 @@
                 <div v-if="data.current.showParams==true">
                     <div class="form-group" v-for="(p, index) in data.current.params">
                         <div class="row">
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <input class="form-control" placeholder="param name" v-model="p.name">
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <input class="form-control" placeholder="param value" v-model="p.value">
                             </div>
                             <a class="btn fa fa-times"></a>
@@ -102,10 +110,10 @@
                     </div>
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <input class="form-control" placeholder="param name">
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <input @blur="addParam()" class="form-control" placeholder="param value">
                             </div>
                             <a class="btn fa fa-times"></a>
@@ -134,10 +142,10 @@
                 <div v-if="data.current.showBody==null||data.current.showBody=='headers'">
                     <div class="form-group" v-for="(h, index) in data.current.headers">
                          <div class="row">
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <input class="form-control" placeholder="header name" v-model="h.name">
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <input class="form-control" placeholder="header value" v-model="h.value">
                             </div>
                             <a @click="delHeader(index)" class="btn fa fa-times"></a>
@@ -145,10 +153,10 @@
                     </div>
                     <div class="form-group">
                          <div class="row">
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <input id="headerName" class="form-control" placeholder="header name">
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <input id="headerValue" @blur="addHeader()" class="form-control" placeholder="header value">
                             </div>
                         </div>
@@ -189,9 +197,12 @@
 
     <script type="text/x-template" id="item-template">
         <li>
-            <a @click="toggleFolder" :class="{'active': selected}">
-                <!-- <i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': model.open}"></i> -->
-                {{model.name}}
+            <a @click="toggleFolder">
+                <i class="fa" :class="{'fa-folder': isFolder, 'fa-file-text': !isFolder, 'fa-folder-open': model.open}"></i>
+                <span>{{model.name}}</span>
+                <i v-if="selected" class="glyphicon glyphicon-option-vertical" style="float:right"></i>
+            </a>
+            
                 <!-- <div class="dropdown-sm">
                     <a id="dropdownMenu2" v-if="selected" class="glyphicon glyphicon-option-vertical dropdown-toggle" data-toggle="dropdown" style="float:right" href="#">
                     </a>
@@ -203,8 +214,7 @@
                         <li><a href="#">Separated link</a></li>
                     </ul>
                 </div> -->
-            </a>
-            <ul style="padding-left:1em" class="nav nav-sidebar" v-show="model.open" v-if="isFolder">
+            <ul style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder">
                 <item v-for="model in model.children" :model="model"></item>
             </ul>
         </li>
@@ -335,6 +345,7 @@
                 },
                 methods: {
                     toggleFolder: function() {
+                        console.log('toggleFolder: ', this.model)
                         data.current = this.model;
                         if (this.isFolder) {
                             // this.model.open = !!!this.model.open;
