@@ -200,7 +200,15 @@
             <a @click="toggleFolder">
                 <i class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}"></i>
                 <span>{{model.name}}</span>
-                <i v-if="selected" class="glyphicon glyphicon-option-vertical" style="float:right"></i>
+                  <div class="dropdown" style="float:right">
+                    <i v-if="selected" id="dropdownMenu1" data-toggle="dropdown" class="glyphicon glyphicon-option-vertical dropdown-toggle" style="float:right; cursor: pointer">
+                    </i>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li v-if="isFolder"><a href="#">Add folder</a></li>
+                        <li v-if="isFolder"><a href="#">Add node</a></li>
+                        <li><a href="#">Delete</a></li>
+                      </ul>
+                  </div>
             </a>
             
                 <!-- <div class="dropdown-sm">
