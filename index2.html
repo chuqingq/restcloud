@@ -34,6 +34,10 @@
             color: #FFFFFF;
             background-color: #428bca;
         }
+        .nav>li>a:focus, .nav>li>a:hover {
+            color: #FFFFFF;
+            background-color: #428bca;
+        }
     </style>
 </head>
 
@@ -197,7 +201,7 @@
 
     <script type="text/x-template" id="item-template">
         <li>
-            <a @click="toggleFolder">
+            <a @click="toggleFolder" :class="{'nav-active-my': selected}">
                 <i class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}"></i>
                 <span>{{model.name}}</span>
                   <div class="dropdown" style="float:right">
