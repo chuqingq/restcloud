@@ -64,15 +64,27 @@
             </ul>
         </div>
 
-        <div id="page-wrapper" class="col-md-9" style="padding-left: 30px">
+        <div id="page-wrapper" class="col-md-9" style="padding-left: 30px" v-if="data.current!=null">
             <p>
             <!-- name -->
-            <div class="row form-group" >
-                <input class="form-control" v-if="data.current!=null" v-model="data.current.name">
+            <div class="row form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Name</span>
+                    <input type="text" class="form-control" v-if="data.current!=null" v-model="data.current.name">
+                </div>
+            </div>
+
+            <!-- 操作 -->
+            <div class="row form-group" v-if="data.current.children!=null">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" style="width: 150px">Append folder</button>
+                    <button type="button" class="btn btn-default" style="width: 150px">Add file</button>
+                    <button type="button" class="btn btn-default" style="width: 150px">Delete</button>
+                </div>
             </div>
 
             <!-- url -->
-            <div class="row" v-if="data.current!=null&&data.current.children==null">
+            <div class="row" v-if="data.current.children==null">
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-btn">
@@ -201,14 +213,14 @@
 
     <script type="text/x-template" id="item-template">
         <li>
-            <a @click="toggleFolder" :class="{'nav-active-my': selected}">
+            <a @click="toggleFolder" :class="{'nav-active-my': selected}" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 <i class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}"></i>
                 <span>{{model.name}}</span>
-                <span v-if="selected" style="float:right; cursor: pointer">
+                <!-- <span v-if="selected" style="float:right; cursor: pointer">
                     <i @click.stop="dropdown" class="glyphicon glyphicon-folder-close"></i>
                     <i @click.stop="dropdown" class="glyphicon glyphicon-plus"></i>
                     <i @click.stop="dropdown" class="glyphicon glyphicon-remove"></i>
-                </span>
+                </span> -->
             </a>
             
                 <!-- <div class="dropdown-sm">
