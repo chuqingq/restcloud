@@ -30,11 +30,13 @@
     <![endif]-->
 
     <style type="text/css">
-        .nav-active-my {
-            color: #FFFFFF;
-            background-color: #428bca;
+        .nav>li>a:hover {
+            background-color: #f5f5f5;
         }
-        .nav>li>a:focus, .nav>li>a:hover {
+        .nav>li>a {
+            cursor: pointer;
+        }
+        .nav-active-my {
             color: #FFFFFF;
             background-color: #428bca;
         }
@@ -213,7 +215,7 @@
 
     <script type="text/x-template" id="item-template">
         <li>
-            <a @click="toggleFolder" :class="{'nav-active-my': selected}" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            <a @click="toggleFolder" :class="{'nav-active-my': selected}" v-bind:style="styleObject">
                 <i class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}"></i>
                 <span>{{model.name}}</span>
                 <!-- <span v-if="selected" style="float:right; cursor: pointer">
@@ -361,6 +363,18 @@
                     },
                     selected: function() {
                         return this.model == data.current
+                    },
+                    styleObject: function() {
+                        obj = {
+                            'overflow': 'hidden',
+                            'text-overflow': 'ellipsis',
+                            'white-space': 'nowrap'
+                        }
+                        if (this.model == data.current) {
+                            obj['color'] = '#FFFFFF'
+                            obj['background-color'] = '#428bca'
+                        }
+                        return obj
                     }
                 },
                 methods: {
