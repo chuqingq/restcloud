@@ -30,9 +30,9 @@
     <![endif]-->
 
     <style type="text/css">
-        .nav>li>a:hover {
+        /*.nav>li>a:hover {
             background-color: #f5f5f5;
-        }
+        }*/
         .nav>li>a {
             cursor: pointer;
         }
@@ -215,8 +215,8 @@
 
     <script type="text/x-template" id="item-template">
         <li>
-            <a @click="toggleFolder" :class="{'nav-active-my': selected}" v-bind:style="styleObject">
-                <i class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}"></i>
+            <a @click="selectNode" :class="{'nav-active-my': selected}" v-bind:style="styleObject">
+                <i class="glyphicon" @click="toggleFolder" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}"></i>
                 <span>{{model.name}}</span>
                 <!-- <span v-if="selected" style="float:right; cursor: pointer">
                     <i @click.stop="dropdown" class="glyphicon glyphicon-folder-close"></i>
@@ -380,13 +380,17 @@
                 methods: {
                     toggleFolder: function() {
                         console.log('toggleFolder: ', this.model)
-                        data.current = this.model;
+                        // data.current = this.model;
                         if (this.isFolder) {
                             // this.model.open = !!!this.model.open;
                             vm.$set(this.model, 'open', !!!this.model.open);
                             // data.current = null;
                         } else {
                         }
+                    },
+                    selectNode: function() {
+                        console.log('selectNode: ', this.model)
+                        data.current = this.model;
                     },
                     dropdown: function() {
                         console.log('dropdown')
