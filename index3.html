@@ -68,13 +68,17 @@
     <div id="wrapper" class="container-fluid" style="padding-left: 0">
         <!-- left tree -->
         <div class="col-md-3" style="overflow:auto; border-right:1px solid #e7e7e7; padding: 0">
-            <!-- <ul class="nav">
+            <ul class="nav">
+                <!-- <li style="border-bottom:1px solid #e7e7e7;">
+                        <i class="glyphicon glyphicon-folder-open" @click="remove" style="cursor: pointer;"></i>
+                    
+                </li> -->
                 <item v-for="model in data.requests" :model="model">
                 </item>
-            </ul> -->
-            <draggable element="ul" class="nav" :options="dragOptions" :move="onMove"> 
+            </ul>
+            <!-- <draggable element="ul" class="nav" :options="dragOptions" :move="onMove"> 
                 <item v-for="model in data.requests" :model="model"></item>
-            </draggable>
+            </draggable> -->
         </div>
 
         <div id="page-wrapper" class="col-md-9" style="padding-left: 30px" v-if="data.current!=null">
@@ -228,15 +232,18 @@
     <!-- <script src="./dist/js/sb-admin-2.js"></script> -->
 
     <script type="text/x-template" id="item-template">
-        <li>
+        <draggable element="li" :options="dragOptions"> 
             <a @click="selectNode" @dblclick="toggleFolder" :class="{'nav-active-my': selected}" v-bind:style="styleObject">
-                <i class="glyphicon" @click="toggleFolder" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}" :style="{cursor: isFolder?'pointer':'default'}"></i>
-                <span style="cursor: default;">{{model.name}}</span>
+                <i @click="toggleFolder" class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}" style="float:left;width:20px" :style="{cursor: isFolder?'pointer':'default'}"></i>
+                <span style="display:block;float:left;width:300px;cursor:default;overflow:hidden;text-overflow:ellipsis;">{{model.name}}</span>
+                <!-- <div></div> -->
                 <!-- <span v-if="selected" style="float:right; cursor: pointer">
                     <i @click.stop="dropdown" class="glyphicon glyphicon-folder-close"></i>
                     <i @click.stop="dropdown" class="glyphicon glyphicon-plus"></i>
                     <i @click.stop="dropdown" class="glyphicon glyphicon-remove"></i>
                 </span> -->
+                <i class="glyphicon glyphicon-trash" @click="toggleFolder" style="cursor: pointer; float: right;width:20px;" v-if="selected"></i>
+                <i class="glyphicon glyphicon-duplicate" @click="toggleFolder" style="cursor: pointer; float: right;width:20px;" v-if="selected"></i>
             </a>
             
                 <!-- <div class="dropdown-sm">
@@ -250,12 +257,12 @@
                         <li><a href="#">Separated link</a></li>
                     </ul>
                 </div> -->
-            <!-- <ul style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder"> -->
-            <draggable element="ul" style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions" :move="onMove"> 
+            <ul style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder">
+            <!-- <draggable element="ul" style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions" :move="onMove">  -->
                 <item v-for="model in model.children" :model="model"></item>
-            </draggable>
-            <!-- </ul> -->
-        </li>
+            <!-- </draggable> -->
+            </ul>
+        </draggable>
     </script>
 
     <script type="text/javascript">
@@ -383,8 +390,8 @@
                     styleObject: function() {
                         obj = {
                             'overflow': 'hidden',
-                            'text-overflow': 'ellipsis',
-                            'white-space': 'nowrap'
+                            // 'text-overflow': 'ellipsis',
+                            // 'white-space': 'nowrap'
                         }
                         if (this.model == data.current) {
                             obj['color'] = '#FFFFFF'
@@ -404,7 +411,7 @@
                 },
                 methods: {
                     toggleFolder: function() {
-                        console.log('toggleFolder: ', this.model)
+                        // console.log('toggleFolder: ', this.model)
                         // data.current = this.model;
                         if (this.isFolder) {
                             // this.model.open = !!!this.model.open;
@@ -414,11 +421,11 @@
                         }
                     },
                     selectNode: function() {
-                        console.log('selectNode: ', this.model)
+                        // console.log('selectNode: ', this.model)
                         data.current = this.model;
                     },
                     dropdown: function() {
-                        console.log('dropdown')
+                        // console.log('dropdown')
                         $('#dropdownMenu1').dropdown()
                     },
                     // vuedraggable
@@ -435,20 +442,12 @@
                 el: '#wrapper',
                 data: {data: data},
                 computed: {
-                    // vuedraggable
-                    dragOptions: function() {
-                      return  {
-                        animation: 0,
-                        group: 'description',
-                        disabled: false,
-                        ghostClass: 'ghost'
-                      };
-                    }
                 },
                 watch: {
                     // selected: function(val) {}
                 },
                 methods: {
+                    remove: function() {},
                     showParams: function() {
                         console.log('showParams: ', data.current.showParams)
                         vm.$set(data.current, 'showParams', !!!data.current.showParams);
@@ -471,13 +470,6 @@
                     delHeader: function(index) {
                         console.log('delHeader(): ' + index);
                         data.current.headers.splice(index, 1);
-                    },
-                    // vuedraggable
-                    onMove ({relatedContext, draggedContext}) {
-                      console.log('onMove');
-                      const relatedElement = relatedContext.element;
-                      const draggedElement = draggedContext.element;
-                      return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
                     }
                 }
             });
