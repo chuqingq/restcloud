@@ -33,9 +33,12 @@
         /*.nav>li>a:hover {
             background-color: #f5f5f5;
         }*/
-        .nav>li>a {
+        /*.nav>li>a {
             cursor: pointer;
-        }
+        }*/
+        /*.nav>li>a>i {
+            cursor: pointer;
+        }*/
         .nav-active-my {
             color: #FFFFFF;
             background-color: #428bca;
@@ -208,7 +211,7 @@
     <script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="./vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- <script src="./vendor/metisMenu/metisMenu.min.js"></script> -->
 
     <!-- Custom Theme JavaScript -->
     <!-- <script src="./dist/js/sb-admin-2.js"></script> -->
@@ -216,7 +219,7 @@
     <script type="text/x-template" id="item-template">
         <li>
             <a @click="selectNode" :class="{'nav-active-my': selected}" v-bind:style="styleObject">
-                <i class="glyphicon" @click="toggleFolder" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}"></i>
+                <i class="glyphicon" @click="toggleFolder" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}" :style="{cursor: isFolder?'pointer':'default'}"></i>
                 <span>{{model.name}}</span>
                 <!-- <span v-if="selected" style="float:right; cursor: pointer">
                     <i @click.stop="dropdown" class="glyphicon glyphicon-folder-close"></i>
