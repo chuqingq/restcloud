@@ -63,10 +63,6 @@
     <div id="wrapper" class="container-fluid" style="padding-left: 0">
         <!-- left tree -->
         <div class="col-md-3" style="overflow:auto; ">
-           <!--  <ul class="nav">
-                <item v-for="model in data.requests" :model="model">
-                </item>
-            </ul> -->
             <draggable element="ul" v-model="data.requests" class="nav" :options="dragOptions" :move="onMove"> 
                 <item v-for="model in data.requests" :model="model"></item>
             </draggable>
@@ -224,37 +220,15 @@
 
     <script type="text/x-template" id="item-template">
         <li>
-        <!-- <draggable v-model="model.children" element="li" :options="dragOptions" :move="onMove"> -->
             <a @click="selectNode" @dblclick="toggleFolder" :class="{'nav-active-my': selected}" v-bind:style="styleObject">
                 <i @click="toggleFolder" class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}" style="float:left;width:20px" :style="{cursor: isFolder?'pointer':'default'}"></i>
                 <span style="display:block;float:left;width:260px;cursor:default;overflow:hidden;text-overflow:ellipsis;">{{model.name}}</span>
-                <!-- <div></div> -->
-                <!-- <span v-if="selected" style="float:right; cursor: pointer">
-                    <i @click.stop="dropdown" class="glyphicon glyphicon-folder-close"></i>
-                    <i @click.stop="dropdown" class="glyphicon glyphicon-plus"></i>
-                    <i @click.stop="dropdown" class="glyphicon glyphicon-remove"></i>
-                </span> -->
                 <i class="glyphicon glyphicon-trash" @click="toggleFolder" style="cursor: pointer; float: right;width:20px;" v-if="selected"></i>
                 <i class="glyphicon glyphicon-duplicate" @click="toggleFolder" style="cursor: pointer; float: right;width:20px;" v-if="selected"></i>
             </a>
-            
-                <!-- <div class="dropdown-sm">
-                    <a id="dropdownMenu2" v-if="selected" class="glyphicon glyphicon-option-vertical dropdown-toggle" data-toggle="dropdown" style="float:right" href="#">
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                    </ul>
-                </div> -->
-            <!-- <ul style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder"> -->
             <draggable v-model="model.children" element="ul" style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions" :move="onMove"> 
                 <item v-for="model in model.children" :model="model"></item>
             </draggable>
-            <!-- </ul> -->
-        <!-- </draggable> -->
         </li>
     </script>
 
