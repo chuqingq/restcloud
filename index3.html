@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>postman</title>
+    <title>POSTMAN</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="./vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -53,38 +53,29 @@
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <nav class="navbar navbar-default navbar-static-top">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="index.html">postman</a>
+            <a class="navbar-brand" href="#">POSTMAN</a>
+            <!-- 如果需要加内容可以参考http://getbootstrap.com/components/#navbar -->
         </div>
     </nav>
 
     <div id="wrapper" class="container-fluid" style="padding-left: 0">
         <!-- left tree -->
-        <div class="col-md-3" style="overflow:auto; border-right:1px solid #e7e7e7; padding: 0">
-            <ul class="nav">
-                <!-- <li style="border-bottom:1px solid #e7e7e7;">
-                        <i class="glyphicon glyphicon-folder-open" @click="remove" style="cursor: pointer;"></i>
-                    
-                </li> -->
+        <div class="col-md-3" style="overflow:auto; ">
+           <!--  <ul class="nav">
                 <item v-for="model in data.requests" :model="model">
                 </item>
-            </ul>
-            <!-- <draggable element="ul" class="nav" :options="dragOptions" :move="onMove"> 
+            </ul> -->
+            <draggable element="ul" v-model="data.requests" class="nav" :options="dragOptions" :move="onMove"> 
                 <item v-for="model in data.requests" :model="model"></item>
-            </draggable> -->
+            </draggable>
         </div>
 
-        <div id="page-wrapper" class="col-md-9" style="padding-left: 30px" v-if="data.current!=null">
-            <p>
+        <div id="page-wrapper" class="col-md-9" v-if="data.current!=null">
+            <!-- <p> -->
             <!-- name -->
-            <div class="row form-group">
+            <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon">Name</span>
                     <input type="text" class="form-control" v-if="data.current!=null" v-model="data.current.name">
@@ -92,7 +83,7 @@
             </div>
 
             <!-- 操作 -->
-            <div class="row form-group" v-if="data.current.children!=null">
+            <div class="form-group" v-if="data.current.children!=null">
                 <div class="btn-group">
                     <button type="button" class="btn btn-default" style="width: 150px">Append folder</button>
                     <button type="button" class="btn btn-default" style="width: 150px">Add file</button>
@@ -101,7 +92,7 @@
             </div>
 
             <!-- url -->
-            <div class="row" v-if="data.current.children==null">
+            <div v-if="data.current.children==null">
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-btn">
@@ -232,10 +223,11 @@
     <!-- <script src="./dist/js/sb-admin-2.js"></script> -->
 
     <script type="text/x-template" id="item-template">
-        <draggable element="li" :options="dragOptions"> 
+        <li>
+        <!-- <draggable v-model="model.children" element="li" :options="dragOptions" :move="onMove"> -->
             <a @click="selectNode" @dblclick="toggleFolder" :class="{'nav-active-my': selected}" v-bind:style="styleObject">
                 <i @click="toggleFolder" class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}" style="float:left;width:20px" :style="{cursor: isFolder?'pointer':'default'}"></i>
-                <span style="display:block;float:left;width:300px;cursor:default;overflow:hidden;text-overflow:ellipsis;">{{model.name}}</span>
+                <span style="display:block;float:left;width:260px;cursor:default;overflow:hidden;text-overflow:ellipsis;">{{model.name}}</span>
                 <!-- <div></div> -->
                 <!-- <span v-if="selected" style="float:right; cursor: pointer">
                     <i @click.stop="dropdown" class="glyphicon glyphicon-folder-close"></i>
@@ -257,12 +249,13 @@
                         <li><a href="#">Separated link</a></li>
                     </ul>
                 </div> -->
-            <ul style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder">
-            <!-- <draggable element="ul" style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions" :move="onMove">  -->
+            <!-- <ul style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder"> -->
+            <draggable v-model="model.children" element="ul" style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions" :move="onMove"> 
                 <item v-for="model in model.children" :model="model"></item>
-            <!-- </draggable> -->
-            </ul>
-        </draggable>
+            </draggable>
+            <!-- </ul> -->
+        <!-- </draggable> -->
+        </li>
     </script>
 
     <script type="text/javascript">
@@ -432,8 +425,12 @@
                     onMove ({relatedContext, draggedContext}) {
                       console.log('onMove');
                       const relatedElement = relatedContext.element;
+                      console.log('relatedElement: ' + JSON.stringify(relatedElement, null, '  '))
                       const draggedElement = draggedContext.element;
-                      return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
+                      console.log('draggedElement: ' + JSON.stringify(draggedElement, null, '  '))
+                      const res = (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
+                      console.log('onMove: ' + res)
+                      return res
                     }
                 }
             });
@@ -442,6 +439,15 @@
                 el: '#wrapper',
                 data: {data: data},
                 computed: {
+                    // vuedraggable
+                    dragOptions: function() {
+                      return  {
+                        animation: 0,
+                        group: 'description',
+                        disabled: false,
+                        ghostClass: 'ghost'
+                      };
+                    }
                 },
                 watch: {
                     // selected: function(val) {}
@@ -470,6 +476,15 @@
                     delHeader: function(index) {
                         console.log('delHeader(): ' + index);
                         data.current.headers.splice(index, 1);
+                    },
+                    // vuedraggable
+                    onMove ({relatedContext, draggedContext}) {
+                      console.log('onMove vm');
+                      const relatedElement = relatedContext.element;
+                      const draggedElement = draggedContext.element;
+                      const res = (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
+                      console.log('onMove: ' + res)
+                      return res
                     }
                 }
             });
