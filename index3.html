@@ -224,9 +224,9 @@
                 <i @click="toggleFolder" class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}" style="float:left;width:20px" :style="{cursor: isFolder?'pointer':'default'}"></i>
                 <span style="display:block;float:left;width:260px;cursor:default;overflow:hidden;text-overflow:ellipsis;">{{model.name}}</span>
                 <i class="glyphicon glyphicon-trash" @click="toggleFolder" style="cursor: pointer; float: right;width:20px;" v-if="selected"></i>
-                <i class="glyphicon glyphicon-duplicate" @click="toggleFolder" style="cursor: pointer; float: right;width:20px;" v-if="selected"></i>
+                <i class="glyphicon glyphicon-duplicate" @click="duplicateNode" style="cursor: pointer; float: right;width:20px;" v-if="selected"></i>
             </a>
-            <draggable v-model="model.children" element="ul" style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions" :move="onMove"> 
+            <draggable v-model="model.children" element="ul" style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions"> 
                 <item v-for="model in model.children" :model="model"></item>
             </draggable>
         </li>
@@ -337,6 +337,8 @@
         };
 
         $(function() {
+            var vm = null
+
             Vue.component('item', {
                 template: '#item-template',
                 props: {
@@ -395,36 +397,68 @@
                         $('#dropdownMenu1').dropdown()
                     },
                     // vuedraggable
-                    onMove ({relatedContext, draggedContext}) {
-                      console.log('onMove');
-                      const relatedElement = relatedContext.element;
-                      console.log('relatedElement: ' + JSON.stringify(relatedElement, null, '  '))
-                      const draggedElement = draggedContext.element;
-                      console.log('draggedElement: ' + JSON.stringify(draggedElement, null, '  '))
-                      const res = (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
-                      console.log('onMove: ' + res)
-                      return res
+                    // onMove ({relatedContext, draggedContext}) {
+                    //   console.log('onMove');
+                    //   const relatedElement = relatedContext.element;
+                    //   console.log('relatedElement: ' + JSON.stringify(relatedElement, null, '  '))
+                    //   const draggedElement = draggedContext.element;
+                    //   console.log('draggedElement: ' + JSON.stringify(draggedElement, null, '  '))
+                    //   const res = (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
+                    //   console.log('onMove: ' + res)
+                    //   return res
+                    // },
+
+                    duplicateNode () {
+                        // 深拷贝一个新节点
+                        var newNode = JSON.parse(JSON.stringify(this.model))
+                        newNode.name += ' COPY'
+                        // 获取到当前节点所在的array
+                        var array = getArray(this.model, vm.data.requests)
+                        if (array) {
+                            array.push(newNode)
+                        }
                     }
                 }
             });
 
-            function deleteNodeFromNodesRecursively(node, nodes) {
-                if (nodes == null || nodes == []) {
-                    return false
-                }
-                return nodes.some(function(element, index, array) {
-                    if (element == node) {
-                        array = array.splice(index, 1)
-                        return true
-                    }
-                    if (element.children != null) {
-                        return deleteNodeFromNodesRecursively(node, element.children)
-                    }
-                    return false
-                })
-            };
+            // function deleteNodeFromNodesRecursively(node, nodes) {
+            //     if (nodes == null || nodes == []) {
+            //         return false
+            //     }
+            //     return nodes.some(function(element, index, array) {
+            //         if (element == node) {
+            //             array = array.splice(index, 1)
+            //             return true
+            //         }
+            //         if (element.children != null) {
+            //             return deleteNodeFromNodesRecursively(node, element.children)
+            //         }
+            //         return false
+            //     })
+            // };
 
-            var vm = new Vue({
+            // 获取到包含node的array
+            function getArray(node, nodes) {
+                if (nodes == null || nodes == []) {
+                    return null
+                }
+                // 如果在nodes中找到
+                if (nodes.find(function(element) {
+                    return element == node
+                })) {
+                    return nodes
+                }
+                for (var i = nodes.length - 1; i >= 0; i--) {
+                    var res = getArray(node, nodes[i].children)
+                    if (res) {
+                        return res
+                    }
+                }
+
+                return null
+            }
+
+            vm = new Vue({
                 el: '#wrapper',
                 data: {data: data},
                 computed: {
@@ -487,12 +521,21 @@
                         if (!confirm("确定删除？")) {
                             return
                         }
-                        var res = deleteNodeFromNodesRecursively(this.data.current, this.data.requests)
-                        console.log('deleteNode: ' + res)
+                        var array = getArray(this.data.current, this.data.requests)
+                        console.log('array: ' + JSON.stringify(array))
+                        if (array) {
+                            array.splice(array.indexOf(this.data.current), 1)
+                        }
                         this.data.current = null
                     },
                     duplicateNode () {
-
+                        // 深拷贝一个新节点
+                        var newNode = JSON.parse(JSON.stringify(this.data.current))
+                        // 获取到当前节点所在的array TODO 
+                        var array = getArray(this.data.current, this.data.requests)
+                        if (array) {
+                            array.push(newNode)
+                        }
                     }
                 }
             });
