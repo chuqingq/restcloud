@@ -63,6 +63,15 @@
     <div id="wrapper" class="container-fluid" style="padding-left: 0">
         <!-- left tree -->
         <div class="col-md-3" style="overflow:auto; ">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default glyphicon glyphicon-folder-open" @click="appendFolder"></button>
+                <button type="button" class="btn btn-default glyphicon glyphicon-file" @click="appendFile"></button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default glyphicon glyphicon-duplicate" @click="duplicateNode"></button>
+                <button type="button" class="btn btn-default glyphicon glyphicon-trash" @click="deleteNode"></button>
+            </div>
+            <br><br>
             <draggable element="ul" v-model="data.requests" class="nav" :options="dragOptions"> 
                 <item v-for="model in data.requests" :model="model"></item>
             </draggable>
@@ -79,13 +88,13 @@
             </div>
 
             <!-- 操作 -->
-            <div class="form-group" v-if="data.current.children!=null">
+            <!-- <div class="form-group" v-if="data.current.children!=null">
                 <div class="btn-group">
                     <button type="button" class="btn btn-default" style="width: 150px" @click="appendFolder">Append folder</button>
                     <button type="button" class="btn btn-default" style="width: 150px" @click="appendFile">Add file</button>
                     <button type="button" class="btn btn-default" style="width: 150px" @click="deleteNode">Delete</button>
                 </div>
-            </div>
+            </div> -->
 
             <!-- url -->
             <div v-if="data.current.children==null">
@@ -223,8 +232,6 @@
             <a @click="selectNode" @dblclick="toggleFolder" :class="{'nav-active-my': selected}" v-bind:style="styleObject">
                 <i @click="toggleFolder" class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}" style="float:left;width:20px" :style="{cursor: isFolder?'pointer':'default'}"></i>
                 <span style="display:block;float:left;width:260px;cursor:default;overflow:hidden;text-overflow:ellipsis;">{{model.name}}</span>
-                <i class="glyphicon glyphicon-trash" @click="toggleFolder" style="cursor: pointer; float: right;width:20px;" v-if="selected"></i>
-                <i class="glyphicon glyphicon-duplicate" @click="duplicateNode" style="cursor: pointer; float: right;width:20px;" v-if="selected"></i>
             </a>
             <draggable v-model="model.children" element="ul" style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions"> 
                 <item v-for="model in model.children" :model="model"></item>
@@ -531,6 +538,7 @@
                     duplicateNode () {
                         // 深拷贝一个新节点
                         var newNode = JSON.parse(JSON.stringify(this.data.current))
+                        newNode.name += ' COPY'
                         // 获取到当前节点所在的array TODO 
                         var array = getArray(this.data.current, this.data.requests)
                         if (array) {
