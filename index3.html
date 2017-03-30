@@ -63,7 +63,7 @@
     <div id="wrapper" class="container-fluid" style="padding-left: 0">
         <!-- left tree -->
         <div class="col-md-3" style="overflow:auto; ">
-            <draggable element="ul" v-model="data.requests" class="nav" :options="dragOptions" :move="onMove"> 
+            <draggable element="ul" v-model="data.requests" class="nav" :options="dragOptions"> 
                 <item v-for="model in data.requests" :model="model"></item>
             </draggable>
         </div>
@@ -81,9 +81,9 @@
             <!-- 操作 -->
             <div class="form-group" v-if="data.current.children!=null">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default" style="width: 150px">Append folder</button>
-                    <button type="button" class="btn btn-default" style="width: 150px">Add file</button>
-                    <button type="button" class="btn btn-default" style="width: 150px">Delete</button>
+                    <button type="button" class="btn btn-default" style="width: 150px" @click="appendFolder">Append folder</button>
+                    <button type="button" class="btn btn-default" style="width: 150px" @click="appendFile">Add file</button>
+                    <button type="button" class="btn btn-default" style="width: 150px" @click="deleteNode">Delete</button>
                 </div>
             </div>
 
@@ -348,8 +348,7 @@
                 // },
                 computed: {
                     isFolder: function() {
-                        return this.model.children &&
-                            this.model.children.length
+                        return !!this.model.children
                     },
                     selected: function() {
                         return this.model == data.current
@@ -409,6 +408,22 @@
                 }
             });
 
+            function deleteNodeFromNodesRecursively(node, nodes) {
+                if (nodes == null || nodes == []) {
+                    return false
+                }
+                return nodes.some(function(element, index, array) {
+                    if (element == node) {
+                        array = array.splice(index, 1)
+                        return true
+                    }
+                    if (element.children != null) {
+                        return deleteNodeFromNodesRecursively(node, element.children)
+                    }
+                    return false
+                })
+            };
+
             var vm = new Vue({
                 el: '#wrapper',
                 data: {data: data},
@@ -459,6 +474,25 @@
                       const res = (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
                       console.log('onMove: ' + res)
                       return res
+                    },
+
+                    appendFolder () {
+                        console.log(JSON.stringify(this.data.current))
+                        this.data.current.children.push({name: 'NEW FOLDER', children: []})
+                    },
+                    appendFile () {
+                        this.data.current.children.push({name: 'NEW FILE'})
+                    },
+                    deleteNode () {
+                        if (!confirm("确定删除？")) {
+                            return
+                        }
+                        var res = deleteNodeFromNodesRecursively(this.data.current, this.data.requests)
+                        console.log('deleteNode: ' + res)
+                        this.data.current = null
+                    },
+                    duplicateNode () {
+
                     }
                 }
             });
