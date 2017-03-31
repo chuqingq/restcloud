@@ -71,6 +71,9 @@
                 <button type="button" class="btn btn-default glyphicon glyphicon-duplicate" :class="{disabled: !data.current}" @click="duplicateNode"></button>
                 <button type="button" class="btn btn-default glyphicon glyphicon-trash" :class="{disabled: !data.current}" @click="deleteNode"></button>
             </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default glyphicon glyphicon-floppy-disk" @click="save"></button>
+            </div>
             <br><br>
             <draggable element="ul" v-model="data.requests" class="nav" :options="dragOptions"> 
                 <item v-for="model in data.requests" :model="model"></item>
@@ -483,7 +486,12 @@
                     },
                 },
                 watch: {
-                    // selected: function(val) {}
+                    data: {
+                        handler: function(val, oldval) {
+                            console.log('new data: ')
+                        },
+                        deep: true
+                    }
                 },
                 methods: {
                     // remove: function() {},
@@ -562,6 +570,9 @@
                             // array.push(newNode)
                             array.splice(array.indexOf(this.data.current)+1, 0, newNode)
                         }
+                    },
+                    save () {
+                        // TODO data保存到服务端
                     }
                 }
             });
