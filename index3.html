@@ -64,12 +64,12 @@
         <!-- left tree -->
         <div class="col-md-3" style="overflow:auto; ">
             <div class="btn-group">
-                <button type="button" class="btn btn-default glyphicon glyphicon-folder-open" @click="appendFolder"></button>
-                <button type="button" class="btn btn-default glyphicon glyphicon-file" @click="appendFile"></button>
+                <button type="button" class="btn btn-default glyphicon glyphicon-folder-open" :class="{disabled: !isFolder}" @click="appendFolder"></button>
+                <button type="button" class="btn btn-default glyphicon glyphicon-file" :class="{disabled: !isFolder}" @click="appendFile"></button>
             </div>
             <div class="btn-group">
-                <button type="button" class="btn btn-default glyphicon glyphicon-duplicate" @click="duplicateNode"></button>
-                <button type="button" class="btn btn-default glyphicon glyphicon-trash" @click="deleteNode"></button>
+                <button type="button" class="btn btn-default glyphicon glyphicon-duplicate" :class="{disabled: !data.current}" @click="duplicateNode"></button>
+                <button type="button" class="btn btn-default glyphicon glyphicon-trash" :class="{disabled: !data.current}" @click="deleteNode"></button>
             </div>
             <br><br>
             <draggable element="ul" v-model="data.requests" class="nav" :options="dragOptions"> 
@@ -477,7 +477,10 @@
                         disabled: false,
                         ghostClass: 'ghost'
                       };
-                    }
+                    },
+                    isFolder: function() {
+                        return !!this.data.current&&!!this.data.current.children
+                    },
                 },
                 watch: {
                     // selected: function(val) {}
@@ -518,13 +521,24 @@
                     // },
 
                     appendFolder () {
+                        if (!this.data.current) {
+                            return
+                        }
                         console.log(JSON.stringify(this.data.current))
                         this.data.current.children.push({name: 'NEW FOLDER', children: []})
+                        this.data.current.open = true
                     },
                     appendFile () {
+                        if (!this.data.current) {
+                            return
+                        }
                         this.data.current.children.push({name: 'NEW FILE'})
+                        this.data.current.children.open = true
                     },
                     deleteNode () {
+                        if (!this.data.current) {
+                            return
+                        }
                         if (!confirm("确定删除？")) {
                             return
                         }
@@ -536,13 +550,17 @@
                         this.data.current = null
                     },
                     duplicateNode () {
+                        if (!this.data.current) {
+                            return
+                        }
                         // 深拷贝一个新节点
                         var newNode = JSON.parse(JSON.stringify(this.data.current))
                         newNode.name += ' COPY'
                         // 获取到当前节点所在的array TODO 
                         var array = getArray(this.data.current, this.data.requests)
                         if (array) {
-                            array.push(newNode)
+                            // array.push(newNode)
+                            array.splice(array.indexOf(this.data.current)+1, 0, newNode)
                         }
                     }
                 }
