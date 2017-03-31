@@ -230,8 +230,8 @@
     <script type="text/x-template" id="item-template">
         <li>
             <a @click="selectNode" @dblclick="toggleFolder" :class="{'nav-active-my': selected}" v-bind:style="styleObject">
-                <i @click="toggleFolder" class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}" style="float:left;width:20px" :style="{cursor: isFolder?'pointer':'default'}"></i>
-                <span style="display:block;float:left;width:260px;cursor:default;overflow:hidden;text-overflow:ellipsis;">{{model.name}}</span>
+                <i @click="toggleFolder" class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}" :style="{cursor: isFolder?'pointer':'default'}"></i>
+                <span>{{model.name}}</span>
             </a>
             <draggable v-model="model.children" element="ul" style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions"> 
                 <item v-for="model in model.children" :model="model"></item>
@@ -365,8 +365,8 @@
                     styleObject: function() {
                         obj = {
                             'overflow': 'hidden',
-                            // 'text-overflow': 'ellipsis',
-                            // 'white-space': 'nowrap'
+                            'text-overflow': 'ellipsis',
+                            'white-space': 'nowrap'
                         }
                         if (this.model == data.current) {
                             obj['color'] = '#FFFFFF'
@@ -483,7 +483,7 @@
                     // selected: function(val) {}
                 },
                 methods: {
-                    remove: function() {},
+                    // remove: function() {},
                     showParams: function() {
                         console.log('showParams: ', data.current.showParams)
                         vm.$set(data.current, 'showParams', !!!data.current.showParams);
@@ -508,14 +508,14 @@
                         data.current.headers.splice(index, 1);
                     },
                     // vuedraggable
-                    onMove ({relatedContext, draggedContext}) {
-                      console.log('onMove vm');
-                      const relatedElement = relatedContext.element;
-                      const draggedElement = draggedContext.element;
-                      const res = (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
-                      console.log('onMove: ' + res)
-                      return res
-                    },
+                    // onMove ({relatedContext, draggedContext}) {
+                    //   console.log('onMove vm');
+                    //   const relatedElement = relatedContext.element;
+                    //   const draggedElement = draggedContext.element;
+                    //   const res = (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
+                    //   console.log('onMove: ' + res)
+                    //   return res
+                    // },
 
                     appendFolder () {
                         console.log(JSON.stringify(this.data.current))
