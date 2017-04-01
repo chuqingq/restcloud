@@ -30,15 +30,6 @@
     <![endif]-->
 
     <style type="text/css">
-        /*.nav>li>a:hover {
-            background-color: #f5f5f5;
-        }*/
-        /*.nav>li>a {
-            cursor: pointer;
-        }*/
-        /*.nav>li>a>i {
-            cursor: pointer;
-        }*/
         .nav-active-my {
             color: #FFFFFF;
             background-color: #428bca;
@@ -81,7 +72,6 @@
         </div>
 
         <div id="page-wrapper" class="col-md-9" v-if="data.current!=null">
-            <!-- <p> -->
             <!-- name -->
             <div class="form-group">
                 <div class="input-group">
@@ -89,15 +79,6 @@
                     <input type="text" class="form-control" v-if="data.current!=null" v-model="data.current.name">
                 </div>
             </div>
-
-            <!-- 操作 -->
-            <!-- <div class="form-group" v-if="data.current.children!=null">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default" style="width: 150px" @click="appendFolder">Append folder</button>
-                    <button type="button" class="btn btn-default" style="width: 150px" @click="appendFile">Add file</button>
-                    <button type="button" class="btn btn-default" style="width: 150px" @click="deleteNode">Delete</button>
-                </div>
-            </div> -->
 
             <!-- url -->
             <div v-if="data.current.children==null">
@@ -243,12 +224,6 @@
     </script>
 
     <script type="text/javascript">
-        // boostrap.js相关
-        // $('#bodyTabs a').click(function (e) {
-        //     console.log('bodytabs a clicked')
-        //     e.preventDefault()
-        //     $(this).tab('show')
-        // });
 
         // vue.js相关
         var data = {
@@ -260,12 +235,6 @@
                     name: 'POST /push/_allot_pusher',
                     method: 'POST',
                     url: 'https://baseurl/push/_allot_pusher?paramA=123&paramB=456',
-                    // showParams: true,
-                    // params: [
-                    //     {name: "paramA", value: 123},
-                    //     {name: "paramB", value: "456"},
-                    //     {name: "", value: ""}
-                    // ],
                     show: 'headers', // 可选
                     authorization: 'this is authorization',
                     headers: [
@@ -290,7 +259,6 @@
                     tests: 'this is tests'
                 }, {
                     name: 'query status',
-                    // open: false,
                     children: [{
                         name: 'GET /push/device_status',
                         method: 'POST',
@@ -354,10 +322,6 @@
                 props: {
                     model: Object
                 },
-                // data: function () {
-                //     // return {open: false}
-                //     return {}
-                // },
                 computed: {
                     isFolder: function() {
                         return !!this.model.children
@@ -406,18 +370,6 @@
                         // console.log('dropdown')
                         $('#dropdownMenu1').dropdown()
                     },
-                    // vuedraggable
-                    // onMove ({relatedContext, draggedContext}) {
-                    //   console.log('onMove');
-                    //   const relatedElement = relatedContext.element;
-                    //   console.log('relatedElement: ' + JSON.stringify(relatedElement, null, '  '))
-                    //   const draggedElement = draggedContext.element;
-                    //   console.log('draggedElement: ' + JSON.stringify(draggedElement, null, '  '))
-                    //   const res = (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
-                    //   console.log('onMove: ' + res)
-                    //   return res
-                    // },
-
                     duplicateNode () {
                         // 深拷贝一个新节点
                         var newNode = JSON.parse(JSON.stringify(this.model))
@@ -430,22 +382,6 @@
                     }
                 }
             });
-
-            // function deleteNodeFromNodesRecursively(node, nodes) {
-            //     if (nodes == null || nodes == []) {
-            //         return false
-            //     }
-            //     return nodes.some(function(element, index, array) {
-            //         if (element == node) {
-            //             array = array.splice(index, 1)
-            //             return true
-            //         }
-            //         if (element.children != null) {
-            //             return deleteNodeFromNodesRecursively(node, element.children)
-            //         }
-            //         return false
-            //     })
-            // };
 
             // 获取到包含node的array
             function getArray(node, nodes) {
@@ -518,16 +454,7 @@
                         console.log('delHeader(): ' + index);
                         data.current.headers.splice(index, 1);
                     },
-                    // vuedraggable
-                    // onMove ({relatedContext, draggedContext}) {
-                    //   console.log('onMove vm');
-                    //   const relatedElement = relatedContext.element;
-                    //   const draggedElement = draggedContext.element;
-                    //   const res = (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
-                    //   console.log('onMove: ' + res)
-                    //   return res
-                    // },
-
+                    
                     appendFolder () {
                         if (!this.data.current) {
                             return
