@@ -4,8 +4,8 @@
 * ~~左侧树支持点击时active，让用户知道当前正在编辑的是哪个节点。~~
 * 左侧树search功能
 
-* requests和children改成item
-* current改到data外面
+* ~~requests和children改成item~~
+* ~~current改到data外面。父实例绑定数据到子实例~~
 
 * 换用postman的collection的json格式
 * 完成后端，可以发送请求
@@ -14,11 +14,12 @@
 * 右侧支持编辑全局变量：包括切换全局变量组、修改全局变量的值等
 * headers支持几种标准的类型的自动补全，且在选择name之后可以选择value
 
-# 接口看护服务：定时自动化
+# 功能：接口看护
 
-* TODO
+* 批量
+* 定时
 
-# 性能测试
+# 性能
 
 * 入参和ab类似，有并发、运行时间等
 * 数据上能够动态取，重新编码
