@@ -4,6 +4,9 @@
 * ~~左侧树支持点击时active，让用户知道当前正在编辑的是哪个节点。~~
 * 左侧树search功能
 
+* requests和children改成item
+* current改到data外面
+
 * 换用postman的collection的json格式
 * 完成后端，可以发送请求
 
