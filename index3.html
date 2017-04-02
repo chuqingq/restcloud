@@ -78,6 +78,10 @@
                     <span class="input-group-addon">Name</span>
                     <input type="text" class="form-control" v-if="current!=null" v-model="current.name">
                 </div>
+                <br>
+                <!-- <div class="tab-pane"> -->
+                    <textarea class="form-control" rows=2 :value="current.description"></textarea>
+                <!-- </div> -->
             </div>
 
             <!-- url -->
@@ -85,15 +89,15 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="width: 100px">{{current.method}} <span class="caret"></span></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="width: 100px">{{current.request.method}} <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
-                              <li><a @click="current.method='GET';" href="#">GET</a></li>
-                              <li><a @click="current.method='POST';" href="#">POST</a></li>
-                              <li><a @click="current.method='PUT';" href="#">PUT</a></li>
-                              <li><a @click="current.method='DELETE';" href="#">DELETE</a></li>
+                              <li><a @click="current.request.method='GET';" href="#">GET</a></li>
+                              <li><a @click="current.request.method='POST';" href="#">POST</a></li>
+                              <li><a @click="current.request.method='PUT';" href="#">PUT</a></li>
+                              <li><a @click="current.request.method='DELETE';" href="#">DELETE</a></li>
                             </ul>
                         </div>
-                        <input class="form-control" v-model="current.url">
+                        <input class="form-control" v-model="current.request.url">
                         <div class="input-group-btn">
                             <!-- <button type="button" class="btn btn-default" :class="{active: data.current.showParams}" @click="showParams()">Params</button> -->
                             <button type="button" class="btn btn-primary" @click="send()">Send</button>
@@ -137,7 +141,7 @@
                 <!-- bodyTabs -->
                 <div class="form-group">
                     <ul class="nav nav-tabs" role="tablist" id="bodyTabs">
-                      <li @click="showBody('headers');" :class="{active: current.showBody==null||current.showBody=='headers'}"><a href="#headers">Headers</a></li>
+                      <li @click="showBody('header');" :class="{active: current.showBody==null||current.showBody=='header'}"><a href="#header">Headers</a></li>
                       <li @click="showBody('body');" :class="{active: current.showBody=='body'}"><a href="#body">Body</a></li>
                       <li @click="showBody('tests');" :class="{active: current.showBody=='tests'}"><a href="#tests">Tests</a></li>
                     </ul>
@@ -146,17 +150,17 @@
                 <fieldset>
                     <div class="tab-content">
                         <div class="tab-pane" id="body">
-                            <textarea class="form-control" rows=10 v-model="current.body"></textarea>
+                            <textarea class="form-control" rows=10 v-model="current.request.body"></textarea>
                         </div>
                     </div>
                 </fieldset>
 
                 <!-- headers -->
-                <div v-if="current.showBody==null||current.showBody=='headers'">
-                    <div class="form-group" v-for="(h, index) in current.headers">
+                <div v-if="current.showBody==null||current.showBody=='header'">
+                    <div class="form-group" v-for="(h, index) in current.request.header">
                          <div class="row">
                             <div class="col-md-4">
-                                <input class="form-control" placeholder="header name" v-model="h.name">
+                                <input class="form-control" placeholder="header name" v-model="h.key">
                             </div>
                             <div class="col-md-4">
                                 <input class="form-control" placeholder="header value" v-model="h.value">
@@ -178,7 +182,7 @@
 
                 <!-- body -->
                 <div class="form-group" v-if="current.showBody=='body'">
-                    <textarea class="form-control" rows=10 v-model="current.body"></textarea>
+                    <textarea class="form-control" rows=10 v-model="current.request.body"></textarea>
                 </div>
 
                 <!-- tests -->
@@ -230,48 +234,62 @@
             // current: null,
             item: [{
                 name: 'xpush',
+                description: "this is xpush dir",
                 // open: true,
                 item: [{
                     name: 'POST /push/_allot_pusher',
-                    method: 'POST',
-                    url: 'https://baseurl/push/_allot_pusher?paramA=123&paramB=456',
-                    show: 'headers', // 可选
-                    authorization: 'this is authorization',
-                    headers: [
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json",
-                            "description": ""
-                        }, {
-                            "name": "User-Token",
-                            "value": "123123123123123123",
-                            "description": ""
-                        }
-                    ],
-                    body: 'this is body',
+                    description: "this post file",
+                    request: {
+                        method: 'POST',
+                        url: 'https://baseurl/push/_allot_pusher?paramA=123&paramB=456',
+                        show: 'header', // 可选
+                        authorization: 'this is authorization',
+                        header: [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "description": ""
+                            }, {
+                                "key": "User-Token",
+                                "value": "123123123123123123",
+                                "description": ""
+                            }
+                        ],
+                        body: 'this is body'
+                    },
+                    response: {},
                     tests: 'this is tests'
                 }, {
                     name: 'POST /push/_single_send',
-                    method: 'POST',
-                    url: 'https://{{baseurl}}/push/_single_send',
-                    authorization: 'this is authorization',
-                    body: 'this is body',
+                    request: {
+                        method: 'POST',
+                        url: 'https://{{baseurl}}/push/_single_send',
+                        authorization: 'this is authorization',
+                        body: 'this is body',
+                    },
+                    response: {},
                     tests: 'this is tests'
                 }, {
                     name: 'query status',
                     item: [{
                         name: 'GET /push/device_status',
-                        method: 'POST',
-                        url: 'https://{{baseurl}}/push/device_status',
-                        authorization: 'this is authorization',
-                        body: 'this is body',
+                        request: {
+                            method: 'POST',
+                            url: 'https://{{baseurl}}/push/device_status',
+                            authorization: 'this is authorization',
+                            body: 'this is body',
+                        },
+                        response: {},
                         tests: 'this is tests'
                     }, {
                         name: 'GET /push/message_status',
-                        method: 'POST',
-                        url: 'https://{{baseurl}}/push/message_status',
-                        authorization: 'this is authorization',
-                        body: 'this is body',
+                        request: {
+                            method: 'POST',
+                            url: 'https://{{baseurl}}/push/message_status',
+                            authorization: 'this is authorization',
+                            body: 'this is body',
+                        },
+                        response: {},
                         tests: 'this is tests'
                     }]
                 }]
@@ -280,34 +298,46 @@
                 // open: false,
                 item: [{
                     name: 'POST /lfs/_allot_pusher',
-                    method: 'POST',
-                    url: 'https://{{baseurl}}/lfs/_allot_pusher',
-                    authorization: 'this is authorization',
-                    body: 'this is body',
+                    request: {
+                        method: 'POST',
+                        url: 'https://{{baseurl}}/lfs/_allot_pusher',
+                        authorization: 'this is authorization',
+                        body: 'this is body',
+                    },
+                    response: {},
                     tests: 'this is tests'
                 }, {
                     name: 'POST /lfs/_single_send',
-                    method: 'POST',
-                    url: 'https://{{baseurl}}/lfs/_single_send',
-                    authorization: 'this is authorization',
-                    body: 'this is body',
+                    request: {
+                        method: 'POST',
+                        url: 'https://{{baseurl}}/lfs/_single_send',
+                        authorization: 'this is authorization',
+                        body: 'this is body',
+                    },
+                    response: {},
                     tests: 'this is tests'
                 }, {
                     name: 'query status',
                     // open: false,
                     item: [{
                         name: 'GET /lfs/device_status',
-                        method: 'POST',
-                        url: 'https://{{baseurl}}/lfs/device_status',
-                        authorization: 'this is authorization',
-                        body: 'this is body',
+                        request: {
+                            method: 'POST',
+                            url: 'https://{{baseurl}}/lfs/device_status',
+                            authorization: 'this is authorization',
+                            body: 'this is body',
+                        },
+                        response: {},
                         tests: 'this is tests'
                     }, {
                         name: 'GET /lfs/message_status',
-                        method: 'POST',
-                        url: 'https://{{baseurl}}/lfs/message_status',
-                        authorization: 'this is authorization',
-                        body: 'this is body',
+                        request: {
+                            method: 'POST',
+                            url: 'https://{{baseurl}}/lfs/message_status',
+                            authorization: 'this is authorization',
+                            body: 'this is body',
+                        },
+                        response: {},
                         tests: 'this is tests'
                     }]
                 }]
@@ -439,7 +469,7 @@
                         vm.$set(this.current, 'showParams', !!!this.current.showParams);
                     },
                     showBody: function(part) {
-                        // part是"headers"、"body"或"tests"
+                        // part是"header"、"body"或"tests"
                         vm.$set(this.current, 'showBody', part);
                     },
                     addHeader: function() {
@@ -447,15 +477,15 @@
                         var headerValue = $('#headerValue').val();
 
                         if (headerName.trim() != '' || headerValue.trim() != '') {
-                            if (this.current.headers == null) vm.$set(this.current, 'headers', []);
-                            this.current.headers = this.current.headers.concat([{name: headerName, value: headerValue}]);
+                            if (this.current.request.header == null) vm.$set(this.current, 'header', []);
+                            this.current.request.header = this.current.request.header.concat([{name: headerName, value: headerValue}]);
                             $('#headerName').val('');
                             $('#headerValue').val('');
                         }
                     },
                     delHeader: function(index) {
                         console.log('delHeader(): ' + index);
-                        this.current.headers.splice(index, 1);
+                        this.current.request.header.splice(index, 1);
                     },
                     
                     appendFolder () {
