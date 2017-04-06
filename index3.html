@@ -160,10 +160,10 @@
                     <div class="form-group" v-for="(h, index) in current.request.header">
                          <div class="row">
                             <div class="col-md-4">
-                                <input class="form-control" placeholder="header name" v-model="h.key">
+                                <input role="header name" class="form-control" placeholder="header name" v-model="h.key">
                             </div>
                             <div class="col-md-4">
-                                <input class="form-control" placeholder="header value" v-model="h.value">
+                                <input role="header value" class="form-control" placeholder="header value" v-model="h.value">
                             </div>
                             <a @click="delHeader(index)" class="btn glyphicon glyphicon-remove"></a>
                         </div>
@@ -171,10 +171,10 @@
                     <div class="form-group">
                          <div class="row">
                             <div class="col-md-4">
-                                <input id="headerName" class="form-control" placeholder="header name">
+                                <input id="headerName" @focus="addHeader2('header name')" class="form-control" placeholder="header name">
                             </div>
                             <div class="col-md-4">
-                                <input id="headerValue" @blur="addHeader()" class="form-control" placeholder="header value">
+                                <input id="headerValue" @focus="addHeader2('header value')" class="form-control" placeholder="header value">
                             </div>
                         </div>
                     </div>
@@ -472,16 +472,33 @@
                         // part是"header"、"body"或"tests"
                         vm.$set(this.current, 'showBody', part);
                     },
-                    addHeader: function() {
-                        var headerName = $('#headerName').val();
-                        var headerValue = $('#headerValue').val();
+                    // addHeader: function() {
+                    //     var headerName = $('#headerName').val();
+                    //     var headerValue = $('#headerValue').val();
+                    //     console.log('key: ' + headerName + ', value: ' + headerValue);
 
-                        if (headerName.trim() != '' || headerValue.trim() != '') {
-                            if (this.current.request.header == null) vm.$set(this.current, 'header', []);
-                            this.current.request.header = this.current.request.header.concat([{name: headerName, value: headerValue}]);
-                            $('#headerName').val('');
-                            $('#headerValue').val('');
-                        }
+                    //     if (headerName.trim() != '' || headerValue.trim() != '') {
+                    //         if (this.current.request.header == null) vm.$set(this.current.request, 'header', []);
+                    //         this.current.request.header = this.current.request.header.concat([{key: headerName, value: headerValue}]);
+                    //         // this.current.request.header.unshift({name: headerName, value: headerValue});
+                    //         // vm.$nextTick(function() {
+                    //             $('#headerName').val('');
+                    //             $('#headerValue').val('');
+                    //         // });
+                    //     }
+                    // },
+                    addHeader2: function(part) {
+                        // 增加一个header
+                        if (this.current.request.header == null) vm.$set(this.current.request, 'header', []);
+                        this.current.request.header = this.current.request.header.concat([{key: '', value: ''}]);
+                        // 聚焦到上一个part:key或者value
+                        vm.$nextTick(function() {
+                            if (part == 'header name') {
+                                $('input[role="header name"]:last')[0].focus()
+                            } else {
+                                $('input[role="header value"]:last')[0].focus()
+                            }
+                        });
                     },
                     delHeader: function(index) {
                         console.log('delHeader(): ' + index);
@@ -500,7 +517,7 @@
                         if (!this.current) {
                             return
                         }
-                        this.current.item.push({name: 'NEW FILE'})
+                        this.current.item.push({name: 'NEW FILE', request: {method: 'GET'}})
                         this.current.item.open = true
                     },
                     deleteNode () {
