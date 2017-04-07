@@ -75,13 +75,14 @@
             <!-- name -->
             <div class="form-group">
                 <div class="input-group">
+                    <!-- <div class="input-group-btn">
+                        <button class="btn btn-default" style="width: 100px">Name</button>
+                    </div> -->
                     <span class="input-group-addon">Name</span>
-                    <input type="text" class="form-control" v-if="current!=null" v-model="current.name">
+                    <input class="form-control" v-if="current!=null" v-model="current.name">
                 </div>
-                <br>
-                <!-- <div class="tab-pane"> -->
-                    <textarea class="form-control" rows=1 v-model="current.description"></textarea>
-                <!-- </div> -->
+                <!-- <br> -->
+                <!-- <input class="form-control" v-model="current.description"> -->
             </div>
 
             <!-- url -->
@@ -189,6 +190,54 @@
                 <div class="form-group" v-if="current.showBody=='tests'">
                     <textarea class="form-control" rows=10 v-model="current.tests"></textarea>
                 </div>
+
+
+                <!-- response -->
+                <div class="panel panel-default" v-if="current.response!=null&&current.response[0]!=null">
+                    <div class="panel-heading">
+                        <span>Response Status: </span>
+                        <span class="label label-default"> {{current.response[0].code + ' ' + current.response[0].status}} </span>
+                        <span> Time: </span>
+                        <span class="label label-default"> {{current.response[0].responseTime}} ms </span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <ul class="nav nav-tabs" role="tablist">
+                              <li @click="showResponseBody('header');" :class="{active: current.showResponseBody==null||current.showResponseBody=='header'}"><a href="#header">Headers</a></li>
+                              <li @click="showResponseBody('body');" :class="{active: current.showResponseBody=='body'}"><a href="#body">Body</a></li>
+                              <li @click="showResponseBody('tests');" :class="{active: current.showResponseBody=='tests'}"><a href="#tests">Tests</a></li>
+                            </ul>
+                        </div>
+                        <!-- response header -->
+                        <div v-if="current.showResponseBody==null||current.showResponseBody=='header'">
+                            <div class="form-group" v-for="(h, index) in current.response[0].header">
+                                <div class="input-group">
+                                    <span class="label label-default">{{h.key}}</span>
+                                    <span> > {{h.value}}</span>
+                                </div>
+                                <!--  <div class="row">
+                                    <div class="col-md-4">
+                                        <input role="header name" class="form-control" placeholder="header name" v-model="h.key">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input role="header value" class="form-control" placeholder="header value" v-model="h.value">
+                                    </div>
+                                    <a @click="delHeader(index)" class="btn glyphicon glyphicon-remove"></a>
+                                </div> -->
+                            </div>
+                        </div>
+
+                        <!-- response body -->
+                        <div class="form-group" v-if="current.showResponseBody=='body'">
+                            <textarea class="form-control" rows=10 v-model="current.request.body"></textarea>
+                        </div>
+
+                        <!-- response tests -->
+                        <div class="form-group" v-if="current.showResponseBody=='tests'">
+                            <textarea class="form-control" rows=10 v-model="current.tests"></textarea>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- /.row -->
         </div>
@@ -257,7 +306,93 @@
                         ],
                         body: 'this is body'
                     },
-                    response: {},
+                    "response": [
+                        {
+                            "id": "241123be-462c-4cac-b1d4-8d44db50a15f",
+                            "name": "200",
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "javascript",
+                            "_postman_previewtype": "html",
+                            "header": [
+                                {
+                                    "name": "Access-Control-Allow-Credentials",
+                                    "key": "Access-Control-Allow-Credentials",
+                                    "value": "",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "Access-Control-Allow-Headers",
+                                    "key": "Access-Control-Allow-Headers",
+                                    "value": "",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "Access-Control-Allow-Methods",
+                                    "key": "Access-Control-Allow-Methods",
+                                    "value": "",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "Access-Control-Allow-Origin",
+                                    "key": "Access-Control-Allow-Origin",
+                                    "value": "",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "Connection",
+                                    "key": "Connection",
+                                    "value": "keep-alive",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "Content-Encoding",
+                                    "key": "Content-Encoding",
+                                    "value": "gzip",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "Content-Length",
+                                    "key": "Content-Length",
+                                    "value": "42",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "Content-Type",
+                                    "key": "Content-Type",
+                                    "value": "application/json; charset=utf-8",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "Date",
+                                    "key": "Date",
+                                    "value": "Thu, 29 Oct 2015 06:17:51 GMT",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "Server",
+                                    "key": "Server",
+                                    "value": "nginx/1.6.2",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "Vary",
+                                    "key": "Vary",
+                                    "value": "Accept-Encoding",
+                                    "description": ""
+                                },
+                                {
+                                    "name": "X-Powered-By",
+                                    "key": "X-Powered-By",
+                                    "value": "Sails <sailsjs.org>",
+                                    "description": ""
+                                }
+                            ],
+                            "cookie": [],
+                            "responseTime": "9843",
+                            "body": "{\"authenticated\":true}"
+                        }
+                    ],
                     tests: 'this is tests'
                 }, {
                     name: 'POST /push/_single_send',
@@ -550,6 +685,12 @@
                     },
                     save () {
                         // TODO data保存到服务端
+                    },
+
+                    // response
+                    showResponseBody: function(part) {
+                        // part是"header"、"body"或"tests"
+                        vm.$set(this.current, 'showResponseBody', part);
                     }
                 }
             });
