@@ -2,7 +2,6 @@
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
-    "json-server": "^0.9.6",
     "newman": "^3.5.2"
   }
 }
