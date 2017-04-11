@@ -277,7 +277,6 @@
     </script>
 
     <script type="text/javascript">
-
         // vue.js相关
         var data = {
             // current: null,
@@ -286,114 +285,39 @@
                 description: "this is xpush dir",
                 // open: true,
                 item: [{
-                    name: 'POST /push/_allot_pusher',
-                    description: "this post file",
-                    request: {
-                        method: 'POST',
-                        url: 'https://baseurl/push/_allot_pusher?paramA=123&paramB=456',
-                        show: 'header', // 可选
-                        authorization: 'this is authorization',
-                        header: [
+                    "name": "cdn/_prefetch sign",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "var jsonData = JSON.parse(responseBody);",
+                                    "postman.setGlobalVariable(\"sign\", jsonData.authorization);",
+                                    "",
+                                    "tests[\"Body matches authorization\"] ",
+                                    "= responseBody.has(\"authorization\");"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "url": "http://testlfs.powerapp.io/push/v1/stub/aksk/sign",
+                        "method": "POST",
+                        "header": [
                             {
                                 "key": "Content-Type",
                                 "value": "application/json",
                                 "description": ""
-                            }, {
-                                "key": "User-Token",
-                                "value": "123123123123123123",
-                                "description": ""
                             }
                         ],
-                        body: 'this is body'
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n\"ak\":\"ak\",\r\n\"sk\":\"sk\",\r\n\"method\":\"POST\",\r\n\"url\":\"http://testlfs.powerapp.io/lfs/v3/cdn/_prefetch\"\r\n}"
+                        },
+                        "description": "batch send auth"
                     },
-                    "response": [
-                        {
-                            "id": "241123be-462c-4cac-b1d4-8d44db50a15f",
-                            "name": "200",
-                            "status": "OK",
-                            "code": 200,
-                            "_postman_previewlanguage": "javascript",
-                            "_postman_previewtype": "html",
-                            "header": [
-                                {
-                                    "name": "Access-Control-Allow-Credentials",
-                                    "key": "Access-Control-Allow-Credentials",
-                                    "value": "",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "Access-Control-Allow-Headers",
-                                    "key": "Access-Control-Allow-Headers",
-                                    "value": "",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "Access-Control-Allow-Methods",
-                                    "key": "Access-Control-Allow-Methods",
-                                    "value": "",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "Access-Control-Allow-Origin",
-                                    "key": "Access-Control-Allow-Origin",
-                                    "value": "",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "Connection",
-                                    "key": "Connection",
-                                    "value": "keep-alive",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "Content-Encoding",
-                                    "key": "Content-Encoding",
-                                    "value": "gzip",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "Content-Length",
-                                    "key": "Content-Length",
-                                    "value": "42",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "Content-Type",
-                                    "key": "Content-Type",
-                                    "value": "application/json; charset=utf-8",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "Date",
-                                    "key": "Date",
-                                    "value": "Thu, 29 Oct 2015 06:17:51 GMT",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "Server",
-                                    "key": "Server",
-                                    "value": "nginx/1.6.2",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "Vary",
-                                    "key": "Vary",
-                                    "value": "Accept-Encoding",
-                                    "description": ""
-                                },
-                                {
-                                    "name": "X-Powered-By",
-                                    "key": "X-Powered-By",
-                                    "value": "Sails <sailsjs.org>",
-                                    "description": ""
-                                }
-                            ],
-                            "cookie": [],
-                            "responseTime": "9843",
-                            "body": "{\"authenticated\":true}"
-                        }
-                    ],
-                    tests: 'this is tests'
+                    "response": []
                 }, {
                     name: 'POST /push/_single_send',
                     request: {
@@ -691,6 +615,61 @@
                     showResponseBody: function(part) {
                         // part是"header"、"body"或"tests"
                         vm.$set(this.current, 'showResponseBody', part);
+                    },
+
+                    send: function() {
+                        console.log('/api/run: ', JSON.stringify(this.current));
+                        // $.post('/api/run', JSON.stringify(this.current), function(err, data) {
+                        //     if (err) { console.log('/api/run error: ', err); }
+                        //     console.log('data: ', data);
+                        //     this.current.response = [data];
+                        // }, 'application/json');
+                        // var req = {
+                        //     "name": "cdn/_prefetch sign",
+                        //     "event": [
+                        //         {
+                        //             "listen": "test",
+                        //             "script": {
+                        //                 "type": "text/javascript",
+                        //                 "exec": [
+                        //                     "var jsonData = JSON.parse(responseBody);",
+                        //                     "postman.setGlobalVariable(\"sign\", jsonData.authorization);",
+                        //                     "",
+                        //                     "tests[\"Body matches authorization\"] ",
+                        //                     "= responseBody.has(\"authorization\");"
+                        //                 ]
+                        //             }
+                        //         }
+                        //     ],
+                        //     "request": {
+                        //         "url": "http://testlfs.powerapp.io/push/v1/stub/aksk/sign",
+                        //         "method": "POST",
+                        //         "header": [
+                        //             {
+                        //                 "key": "Content-Type",
+                        //                 "value": "application/json",
+                        //                 "description": ""
+                        //             }
+                        //         ],
+                        //         "body": {
+                        //             "mode": "raw",
+                        //             "raw": "{\r\n\"ak\":\"ak\",\r\n\"sk\":\"sk\",\r\n\"method\":\"POST\",\r\n\"url\":\"http://testlfs.powerapp.io/lfs/v3/cdn/_prefetch\"\r\n}"
+                        //         },
+                        //         "description": "batch send auth"
+                        //     },
+                        //     "response": []
+                        // };
+                        $.ajax({
+                            url: '/api/run',
+                            type: "POST",
+                            data: JSON.stringify(this.current),
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            success: function(data){
+                                console.log('data: ', data);
+                                vm.current.response = [data];
+                            }
+                        });
                     }
                 }
             });
