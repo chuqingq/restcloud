@@ -3,8 +3,11 @@
 // 2. 拼接一个collection.json，用newman.run(json, {reporter: 'json'})来获取结果，并返回
 
 var express = require('express');
+var jsonServer = require('json-server');
 var bodyParser = require('body-parser');
 var newman = require('newman');
+
+var jsonServerRouter = jsonServer.router('./LFS.postman_collection.json');
 
 var app = express();
 app.use(express.static('./'));
@@ -36,5 +39,6 @@ app.post('/api/run', function(req, res) {
         res.send(res2.run.executions[0].response);
     });
 });
+app.use(jsonServerRouter);
 
 app.listen(8080);

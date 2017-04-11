@@ -673,6 +673,11 @@
                     }
                 }
             });
+
+            // 到服务器获取collection.json
+            $.getJSON('/item', function(data) {
+                vm.data = {item: data};
+            });
         });
     </script>
 
