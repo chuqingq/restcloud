@@ -148,13 +148,13 @@
                     </ul>
                 </div>
 
-                <fieldset>
+                <!-- <fieldset>
                     <div class="tab-content">
                         <div class="tab-pane" id="body">
                             <textarea class="form-control" rows=10 v-model="current.request.body"></textarea>
                         </div>
                     </div>
-                </fieldset>
+                </fieldset> -->
 
                 <!-- headers -->
                 <div v-if="current.showBody==null||current.showBody=='header'">
@@ -183,7 +183,7 @@
 
                 <!-- body -->
                 <div class="form-group" v-if="current.showBody=='body'">
-                    <textarea class="form-control" rows=10 v-model="current.request.body"></textarea>
+                    <textarea class="form-control" rows=10 v-model="current.request.body.raw"></textarea>
                 </div>
 
                 <!-- tests -->
@@ -229,7 +229,7 @@
 
                         <!-- response body -->
                         <div class="form-group" v-if="current.showResponseBody=='body'">
-                            <textarea class="form-control" rows=10 v-model="current.request.body"></textarea>
+                            <textarea class="form-control" rows=10 v-model="current.request.body.raw" readonly></textarea>
                         </div>
 
                         <!-- response tests -->
