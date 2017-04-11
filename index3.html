@@ -64,8 +64,18 @@
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-default glyphicon glyphicon-floppy-disk" @click="save"></button>
+                <button type="button" class="btn btn-default glyphicon glyphicon-save" @click="exportToJson"></button>
             </div>
             <br><br>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search for...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+            </div>
+            <br>
             <draggable element="ul" v-model="data.item" class="nav" :options="dragOptions"> 
                 <item v-for="model in data.item" :model="model" :current="current"></item>
             </draggable>
@@ -609,6 +619,9 @@
                     },
                     save () {
                         // TODO data保存到服务端
+                    },
+                    exportToJson () {
+                        // TODO 导出
                     },
 
                     // response
