@@ -1,7 +1,9 @@
 {
+  "name": "chuqq postman",
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
+    "express-session": "^1.15.2",
     "newman": "^3.5.2"
   }
 }

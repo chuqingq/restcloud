@@ -5,6 +5,7 @@
 var fs = require('fs');
 
 var express = require('express');
+var session = require('express-session')
 var bodyParser = require('body-parser');
 var newman = require('newman');
 
@@ -13,6 +14,31 @@ const COLLECTION_JSON = './LFS.postman_collection.json';
 var app = express();
 app.use(express.static('./'));
 app.use(bodyParser.json());
+app.use(session({
+    secret: 'chuqq',
+    resave: false,
+    saveUninitialized: false
+    // cookie TODO 是否要设置maxAge
+}));
+
+app.post('/api/login', function(req, res) {
+    console.log('/api/login username: ' + req.body.username);
+    console.log('/api/login password: ' + req.body.password);
+    // TODO 校验用户
+    req.session.username = req.body.username;
+    req.session.save();
+    res.json({});
+});
+app.post('/api/logout', function(req, res) {
+    console.log('/api/logout username: ' + req.session.username);
+    if (!req.session.username) {
+        console.log('/api/logout not longined');
+        res.json({ret: 400, msg: 'not logined'});
+        return;
+    }
+    req.session.username = false;
+    res.json({});
+});
 // 获取数据
 app.get('/api/get', function(req, res) {
     console.log('/api/get:');
