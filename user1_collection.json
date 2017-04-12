@@ -1,0 +1,222 @@
+{
+  "variables": [],
+  "info": {
+    "name": "LFS",
+    "_postman_id": "21bc3569-1f52-dd22-eeef-671dd971a9ca",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "base",
+      "description": "",
+      "item": [
+        {
+          "name": "cdn/_prefetch sign123123123123",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = JSON.parse(responseBody);",
+                  "postman.setGlobalVariable(\"sign\", jsonData.authorization);",
+                  "",
+                  "tests[\"Body matches authorization\"] ",
+                  "= responseBody.has(\"authorization\");"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "url": "http://testlfs.powerapp.io/push/v1/stub/aksk/sign",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"ak\":\"ak\",\r\n\"sk\":\"sk\",\r\n\"method\":\"POST\",\r\n\"url\":\"http://testlfs.powerapp.io/lfs/v3/cdn/_prefetch\"\r\n}"
+            },
+            "description": "batch send auth"
+          },
+          "response": []
+        },
+        {
+          "name": "cdn/_prefetch",
+          "request": {
+            "url": "http://testlfs.powerapp.io/lfs/v3/cdn/_prefetch?authorization={{sign}}",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"urls\": [\"http://cdn.powerapp.io/lfs/v3/s/123,04a592e52f8d1325/default.jpg?authorization=aksk-auth-v1/RdbRr1DEkS22tWWs/2017-03-15T11:45:58Z/0/host/f52b7afcc8b8e5128a42f1e915b3325ada1f2d184ef82b5a1f48d24d958d1cab\"]\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "cdn/prefetch/_callback",
+          "request": {
+            "url": "http://testlfs.powerapp.io/lfs/v3/cdn/prefetch/_callback",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\t\"url\": \"http://cdn.powerapp.io/lfs/v3/s/123,04a592e52f8d1325/default.jpg?authorization=aksk-auth-v1/RdbRr1DEkS22tWWs/2017-03-15T11:45:58Z/0/host/f52b7afcc8b8e5128a42f1e915b3325ada1f2d184ef82b5a1f48d24d958d1cab\",\r\n\t\"Status\": \"success\",\r\n\t\"StartTime\":\"Tue Sep 22 12:47:39CST 2015\",\r\n\t\"EndTime\":\"Tue Sep 22 12:47:59 CST 2015\"\r\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "cdn/_refresh sign",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = JSON.parse(responseBody);",
+                  "postman.setGlobalVariable(\"sign\", jsonData.authorization);",
+                  "",
+                  "tests[\"Body matches authorization\"] = responseBody.has(\"authorization\");"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "url": "http://testlfs.powerapp.io/push/v1/stub/aksk/sign",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"ak\":\"ak\",\r\n\"sk\":\"sk\",\r\n\"method\":\"POST\",\r\n\"url\":\"http://testlfs.powerapp.io/lfs/v3/cdn/_refresh\"\r\n}"
+            },
+            "description": "batch send auth"
+          },
+          "response": []
+        },
+        {
+          "name": "cdn/refresh",
+          "request": {
+            "url": "http://testlfs.powerapp.io/lfs/v3/cdn/_refresh?authorization={{sign}}",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"urls\": [\"http://cdn.powerapp.io/lfs/v3/s/123,04a592e52f8d1325/default.jpg?authorization=aksk-auth-v1/RdbRr1DEkS22tWWs/2017-03-15T11:45:58Z/0/host/f52b7afcc8b8e5128a42f1e915b3325ada1f2d184ef82b5a1f48d24d958d1cab\"]\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "cdn/refresh/_query sign",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = JSON.parse(responseBody);",
+                  "postman.setGlobalVariable(\"sign\", jsonData.authorization);",
+                  "",
+                  "tests[\"Body matches authorization\"] = responseBody.has(\"authorization\");"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "url": "http://testlfs.powerapp.io/push/v1/stub/aksk/sign",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"ak\":\"ak\",\r\n\"sk\":\"sk\",\r\n\"method\":\"POST\",\r\n\"url\":\"http://testlfs.powerapp.io/lfs/v3/cdn/refresh/_query\"\r\n}"
+            },
+            "description": "batch send auth"
+          },
+          "response": []
+        },
+        {
+          "name": "cdn/refresh/_query",
+          "request": {
+            "url": "http://testlfs.powerapp.io/lfs/v3/cdn/refresh/_query?authorization={{sign}}",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"urls\": [\"http://cdn.powerapp.io/lfs/v3/s/123,04a592e52f8d1325/default.jpg?authorization=aksk-auth-v1/RdbRr1DEkS22tWWs/2017-03-15T11:45:58Z/0/host/f52b7afcc8b8e5128a42f1e915b3325ada1f2d184ef82b5a1f48d24d958d1cab\"]\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "网宿 cdn/refresh",
+          "request": {
+            "url": "http://ccm.chinanetcenter.com/ccm/servlet/contReceiver",
+            "method": "POST",
+            "header": [
+              {
+                "key": "//Content-Type",
+                "value": "application/x-www-form-urlencoded",
+                "description": "",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "username=huawei_powerapp&passwd=9503af2db4a52c94a3d896a9767b0de6&url=http://cdn.powerapp.io/lfs/v3/s/123,04a592e52f8d1325/default.jpg?authorization=aksk-auth-v1/RdbRr1DEkS22tWWs/2017-03-15T11:45:58Z/0/host/f52b7afcc8b8e5128a42f1e915b3325ada1f2d184ef82b5a1f48d24d958d1cab"
+            },
+            "description": ""
+          },
+          "response": []
+        }
+      ],
+      "open": true
+    }
+  ]
+}

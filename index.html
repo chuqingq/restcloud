@@ -579,13 +579,24 @@
                     }
                 },
                 methods: {
+                    // 判断是否已登录
+                    session () {
+                        $.getJSON('/api/session', function(data) {
+                            console.log('/api/session username: ' + data.username);
+                            if (data.username) {
+                                vm.username = data.username;
+                                vm.data = data.collection;
+                            }
+                        });
+                    },
                     login () {
                         console.log('login: ');
                         var username = $('#username').val();
                         var password = $('#password').val();
-                        $.post('/api/login', {username, password}, function(data) {
+                        $.post('/api/user/login', {username, password}, function(data) {
                             if (!data.ret) {
                                 vm.username = username;
+                                vm.data = data.collection;
                                 console.log('username: ' + username);
                             }
                             else {
@@ -595,7 +606,7 @@
                     },
                     logout () {
                         console.log('logout: ');
-                        $.post('/api/logout', {}, function(data) {
+                        $.post('/api/user/logout', {}, function(data) {
                             if (!data.ret) {
                                 vm.username = '';
                                 console.log('username: ' + username);
@@ -696,7 +707,7 @@
                     save () {
                         // data保存到服务端
                         $.ajax({
-                            url: '/api/saveall',
+                            url: '/api/collection/saveall',
                             type: "POST",
                             data: JSON.stringify(this.data),
                             dataType: "json",
@@ -717,7 +728,7 @@
                     },
 
                     send: function() {
-                        console.log('/api/run: ', JSON.stringify(this.current));
+                        console.log('/api/collection/run: ', JSON.stringify(this.current));
                         // $.post('/api/run', JSON.stringify(this.current), function(err, data) {
                         //     if (err) { console.log('/api/run error: ', err); }
                         //     console.log('data: ', data);
@@ -759,7 +770,7 @@
                         //     "response": []
                         // };
                         $.ajax({
-                            url: '/api/run',
+                            url: '/api/collection/run',
                             type: "POST",
                             data: JSON.stringify(this.current),
                             dataType: "json",
@@ -773,10 +784,7 @@
                 }
             });
 
-            // 到服务器获取collection.json
-            $.getJSON('/api/get', function(data) {
-                vm.data = data;
-            });
+            vm.session();
         });
     </script>
 
