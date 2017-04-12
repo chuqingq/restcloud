@@ -21,14 +21,6 @@ app.use(session({
     // cookie TODO 是否要设置maxAge
 }));
 
-app.get('/', function(req, res) {
-    console.log('/:');
-    if (!req.session.username) {
-        res.redirect('/login.html');
-        return;
-    }
-    res.redirect('/index.html');
-});
 app.post('/api/login', function(req, res) {
     console.log('/api/login username: ' + req.body.username);
     console.log('/api/login password: ' + req.body.password);
