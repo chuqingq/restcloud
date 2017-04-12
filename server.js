@@ -12,8 +12,8 @@ var newman = require('newman');
 const COLLECTION_JSON = './LFS.postman_collection.json';
 
 var app = express();
-app.use(express.static('./'));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
     secret: 'chuqq',
     resave: false,
@@ -21,6 +21,14 @@ app.use(session({
     // cookie TODO 是否要设置maxAge
 }));
 
+app.get('/', function(req, res) {
+    console.log('/:');
+    if (!req.session.username) {
+        res.redirect('/login.html');
+        return;
+    }
+    res.redirect('/index.html');
+});
 app.post('/api/login', function(req, res) {
     console.log('/api/login username: ' + req.body.username);
     console.log('/api/login password: ' + req.body.password);
@@ -82,5 +90,7 @@ app.post('/api/run', function(req, res) {
         res.send(res2.run.executions[0].response);
     });
 });
+// html文件
+app.use(express.static('./'));
 
 app.listen(8080);
