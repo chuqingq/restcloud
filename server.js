@@ -85,4 +85,4 @@ app.post('/api/run', function(req, res) {
 // html文件
 app.use(express.static('./'));
 
-app.listen(8080);
+app.listen(8088);

@@ -51,12 +51,12 @@
                     <a class="navbar-brand" href="#">POSTMAN</a>
                     <!-- 如果需要加内容可以参考http://getbootstrap.com/components/#navbar -->
                 </div>
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right" v-if="!!username">
                   <!-- <li><a href="#">Link</a></li> -->
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{username}}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="#">Logout</a></li>
+                      <li><a href="#" @click="logout">Logout</a></li>
                       <!-- <li><a href="#">Another action</a></li>
                       <li><a href="#">Something else here</a></li>
                       <li role="separator" class="divider"></li>
@@ -590,6 +590,18 @@
                             }
                             else {
                                 alert('用户名或密码不正确');
+                            }
+                        });
+                    },
+                    logout () {
+                        console.log('logout: ');
+                        $.post('/api/logout', {}, function(data) {
+                            if (!data.ret) {
+                                vm.username = '';
+                                console.log('username: ' + username);
+                            }
+                            else {
+                                alert('登出失败');
                             }
                         });
                     },
