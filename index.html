@@ -673,7 +673,41 @@
                         if (!this.current) {
                             return
                         }
-                        this.current.item.push({name: 'NEW FILE', request: {method: 'GET'}})
+                        const EMPTY_ITEM = {
+                          "name": "NEW FILE",
+                          "event": [
+                            {
+                              "listen": "test",
+                              "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                  "var jsonData = JSON.parse(responseBody);",
+                                  "postman.setGlobalVariable(\"sign\", jsonData.authorization);",
+                                  "",
+                                  "tests[\"Body matches authorization\"] ",
+                                  "= responseBody.has(\"authorization\");"
+                                ]
+                              }
+                            }
+                          ],
+                          "request": {
+                            "url": "http://testlfs.powerapp.io/push/v1/stub/aksk/sign",
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "description": ""
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\r\n\"ak\":\"ak\",\r\n\"sk\":\"sk\",\r\n\"method\":\"POST\",\r\n\"url\":\"http://testlfs.powerapp.io/lfs/v3/cdn/_prefetch\"\r\n}"
+                            },
+                            "description": "batch send auth"
+                          }
+                        };
+                        this.current.item.push(EMPTY_ITEM);
                         this.current.item.open = true
                     },
                     deleteNode () {

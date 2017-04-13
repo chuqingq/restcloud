@@ -11,6 +11,60 @@ var newman = require('newman');
 
 var config = require('./package.json').config;
 
+const EMPTY_ITEM = {
+    "name": "NEW FILE",
+    "event": [
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "var jsonData = JSON.parse(responseBody);",
+                    "postman.setGlobalVariable(\"sign\", jsonData.authorization);",
+                    "",
+                    "tests[\"Body matches authorization\"] ",
+                    "= responseBody.has(\"authorization\");"
+                ]
+            }
+        }
+    ],
+    "request": {
+        "url": "http://testlfs.powerapp.io/push/v1/stub/aksk/sign",
+        "method": "POST",
+        "header": [
+            {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+            }
+        ],
+        "body": {
+            "mode": "raw",
+            "raw": "{\r\n\"ak\":\"ak\",\r\n\"sk\":\"sk\",\r\n\"method\":\"POST\",\r\n\"url\":\"http://testlfs.powerapp.io/lfs/v3/cdn/_prefetch\"\r\n}"
+        },
+        "description": "batch send auth"
+    },
+    "response": []
+};
+const EMPTY_COLLECTION = {
+    "variables": [],
+    "info": {
+        "name": "LFS",
+        "_postman_id": "21bc3569-1f52-dd22-eeef-671dd971a9ca",
+        "description": "",
+        "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "NEW FOLDER",
+            "description": "",
+            "item": [
+                EMPTY_ITEM
+            ]
+        }
+    ]
+};
+
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -30,23 +84,26 @@ app.post('/api/user/login', function(req, res) {
         if (user.username == req.body.username) {
             if (user.password == req.body.password) {
                 req.session.username = req.body.username;
-                break;
             }
-            else {
-                break;
-            }
+            break;
         }
     }
     console.log('username: ' + req.session.username);
-    if (req.session.username) {
-        req.session.save();
-        res.json({
-            username: req.session.username,
-            collection: JSON.parse(fs.readFileSync(req.session.username+'_collection.json'))
-        });
-    } else {
+    if (!req.session.username) {
         res.json({ret: -1, msg: '用户名或密码无效'})
     }
+    req.session.save();
+    var collectionFile = req.session.username+'_collection.json';
+    fs.access(collectionFile, function(err) {
+        var collection = EMPTY_COLLECTION;
+        if (!err) {
+            collection = JSON.parse(fs.readFileSync(collectionFile));
+        }
+        res.json({
+            username: req.session.username,
+            collection: collection
+        });
+    });
 });
 app.post('/api/user/logout', function(req, res) {
     console.log('/api/user/logout username: ' + req.session.username);
@@ -59,15 +116,14 @@ app.post('/api/user/logout', function(req, res) {
     res.json({});
 });
 app.get('/api/session', function(req, res) {
-    if (req.session.username) {
-        res.json({
-            username: req.session.username,
-            collection: JSON.parse(fs.readFileSync(req.session.username+'_collection.json'))
-        });
-    }
-    else {
+    if (!req.session.username) {
         res.json({ret:-1, msg: '会话无效'});
+        return
     }
+    res.json({
+        username: req.session.username,
+        collection: JSON.parse(fs.readFileSync(req.session.username+'_collection.json'))
+    });
 });
 // 获取数据
 app.get('/api/collection/get', function(req, res) {
@@ -76,9 +132,15 @@ app.get('/api/collection/get', function(req, res) {
         res.send({ret:-1,msg:'会话失效'})
         return;
     }
-    var content = fs.readFileSync(req.session.username + '_collection.json');
-    // TODO 如果文件不存在，则回复一个空的模板
-    res.send(content);
+    var collectionFile = req.session.username + '_collection.json';
+    fs.exists(collectionFile, function(err) {
+        if (err) {
+            fs.writeFileSync(collectionFile, JSON.stringify(EMPTY_COLLECTION, null, '  '));
+        }
+        var content = fs.readFileSync();
+        // TODO 如果文件不存在，则回复一个空的模板
+        res.send(content);
+    });
 });
 // 保存所有数据
 app.post('/api/collection/saveall', function(req, res) {
@@ -97,6 +159,10 @@ app.post('/api/collection/saveall', function(req, res) {
 app.post('/api/collection/run', function(req, res) {
     // 请求的body是个request，响应的body是response
     console.log('/api/collection/run: ' + req.body.method + ' ' + req.body.name);
+    if (!req.session.username) {
+        res.json({ret:-1,msg:'会话失效'});
+        return;
+    }
     // TODO collection做成一个模板
     var collection = {
         "variables": [],
