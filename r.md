@@ -8,11 +8,15 @@
 
 * ~~左侧树支持新建、删除，包括目录和文件~~
 * ~~左侧toolbar支持tip~~
+* ~~tooltip应该在点击后消失：显式调用focusout~~
 * ~~左侧树支持点击时active，让用户知道当前正在编辑的是哪个节点。~~
 * ~~左侧即使不选中节点，也能创建。在根节点创建~~
-* 左侧树search功能
-* 增加导入功能
-* 支持postman的collection
+* low：左侧树search功能
+* high：增加导入功能
+* high：支持postman的collection
+
+* high：collection尽可能自动保存
+* 未保存时离开页面会提示
 
 * ~~requests和children改成item~~
 * ~~current改到data外面。父实例绑定数据到子实例~~
