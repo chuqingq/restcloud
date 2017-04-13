@@ -1,7 +1,3 @@
-// 1. 先设置支持跨域
-// 2. 拼接一个collection.json，用newman.run(json, {reporter: 'json'})来获取结果，并返回
-// 去掉对json-server的依赖，自己读写文件
-
 var fs = require('fs');
 
 var express = require('express');
@@ -46,6 +42,7 @@ const EMPTY_ITEM = {
     },
     "response": []
 };
+
 const EMPTY_COLLECTION = {
     "variables": [],
     "info": {
@@ -66,6 +63,7 @@ const EMPTY_COLLECTION = {
 };
 
 var app = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({

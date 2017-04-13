@@ -13,15 +13,6 @@
     <!-- Bootstrap Core CSS -->
     <link href="./vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- MetisMenu CSS -->
-    <!-- <link href="./vendor/metisMenu/metisMenu.min.css" rel="stylesheet"> -->
-
-    <!-- Custom CSS -->
-    <!-- <link href="./dist/css/sb-admin-2.css" rel="stylesheet"> -->
-
-    <!-- Custom Fonts -->
-    <!-- <link href="./vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
-
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -207,14 +198,6 @@
                         </ul>
                     </div>
 
-                    <!-- <fieldset>
-                        <div class="tab-content">
-                            <div class="tab-pane" id="body">
-                                <textarea class="form-control" rows=10 v-model="current.request.body"></textarea>
-                            </div>
-                        </div>
-                    </fieldset> -->
-
                     <!-- headers -->
                     <div v-if="current.showBody==null||current.showBody=='header'">
                         <div class="form-group" v-for="(h, index) in current.request.header">
@@ -231,10 +214,10 @@
                         <div class="form-group">
                              <div class="row">
                                 <div class="col-md-4">
-                                    <input id="headerName" @focus="addHeader2('header name')" class="form-control" placeholder="header name">
+                                    <input id="headerName" @focus="addHeader('header name')" class="form-control" placeholder="header name">
                                 </div>
                                 <div class="col-md-4">
-                                    <input id="headerValue" @focus="addHeader2('header value')" class="form-control" placeholder="header value">
+                                    <input id="headerValue" @focus="addHeader('header value')" class="form-control" placeholder="header value">
                                 </div>
                             </div>
                         </div>
@@ -274,15 +257,6 @@
                                         <span class="label label-default">{{h.key}}</span>
                                         <span> > {{h.value}}</span>
                                     </div>
-                                    <!--  <div class="row">
-                                        <div class="col-md-4">
-                                            <input role="header name" class="form-control" placeholder="header name" v-model="h.key">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input role="header value" class="form-control" placeholder="header value" v-model="h.value">
-                                        </div>
-                                        <a @click="delHeader(index)" class="btn glyphicon glyphicon-remove"></a>
-                                    </div> -->
                                 </div>
                             </div>
 
@@ -308,7 +282,6 @@
     <script src="./vendor/vuejs/vue.js"></script>
 
     <!-- jQuery -->
-    <!-- <script>window.$ = window.jQuery = require('./vendor/jquery/jquery.min.js');</script> -->
     <script src="./vendor/jquery/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
@@ -316,12 +289,6 @@
 
     <script src="Sortable.js"></script>
     <script src="vuedraggable.js"></script>
-
-    <!-- Metis Menu Plugin JavaScript -->
-    <!-- <script src="./vendor/metisMenu/metisMenu.min.js"></script> -->
-
-    <!-- Custom Theme JavaScript -->
-    <!-- <script src="./dist/js/sb-admin-2.js"></script> -->
 
     <script type="text/x-template" id="item-template">
         <li>
@@ -553,7 +520,7 @@
                 data: {
                     username: '',
                     current: null,
-                    data: data
+                    data: {item: []}
                 },
                 computed: {
                     // vuedraggable
@@ -628,22 +595,7 @@
                         // part是"header"、"body"或"tests"
                         vm.$set(this.current, 'showBody', part);
                     },
-                    // addHeader: function() {
-                    //     var headerName = $('#headerName').val();
-                    //     var headerValue = $('#headerValue').val();
-                    //     console.log('key: ' + headerName + ', value: ' + headerValue);
-
-                    //     if (headerName.trim() != '' || headerValue.trim() != '') {
-                    //         if (this.current.request.header == null) vm.$set(this.current.request, 'header', []);
-                    //         this.current.request.header = this.current.request.header.concat([{key: headerName, value: headerValue}]);
-                    //         // this.current.request.header.unshift({name: headerName, value: headerValue});
-                    //         // vm.$nextTick(function() {
-                    //             $('#headerName').val('');
-                    //             $('#headerValue').val('');
-                    //         // });
-                    //     }
-                    // },
-                    addHeader2: function(part) {
+                    addHeader: function(part) {
                         // 增加一个header
                         if (this.current.request.header == null) vm.$set(this.current.request, 'header', []);
                         this.current.request.header = this.current.request.header.concat([{key: '', value: ''}]);
@@ -731,10 +683,9 @@
                         // 深拷贝一个新节点
                         var newNode = JSON.parse(JSON.stringify(this.current))
                         newNode.name += ' COPY'
-                        // 获取到当前节点所在的array TODO 
+                        // 获取到当前节点所在的array
                         var array = getArray(this.current, this.data.item)
                         if (array) {
-                            // array.push(newNode)
                             array.splice(array.indexOf(this.current)+1, 0, newNode)
                         }
                     },
@@ -763,46 +714,6 @@
 
                     send: function() {
                         console.log('/api/collection/run: ', JSON.stringify(this.current));
-                        // $.post('/api/run', JSON.stringify(this.current), function(err, data) {
-                        //     if (err) { console.log('/api/run error: ', err); }
-                        //     console.log('data: ', data);
-                        //     this.current.response = [data];
-                        // }, 'application/json');
-                        // var req = {
-                        //     "name": "cdn/_prefetch sign",
-                        //     "event": [
-                        //         {
-                        //             "listen": "test",
-                        //             "script": {
-                        //                 "type": "text/javascript",
-                        //                 "exec": [
-                        //                     "var jsonData = JSON.parse(responseBody);",
-                        //                     "postman.setGlobalVariable(\"sign\", jsonData.authorization);",
-                        //                     "",
-                        //                     "tests[\"Body matches authorization\"] ",
-                        //                     "= responseBody.has(\"authorization\");"
-                        //                 ]
-                        //             }
-                        //         }
-                        //     ],
-                        //     "request": {
-                        //         "url": "http://testlfs.powerapp.io/push/v1/stub/aksk/sign",
-                        //         "method": "POST",
-                        //         "header": [
-                        //             {
-                        //                 "key": "Content-Type",
-                        //                 "value": "application/json",
-                        //                 "description": ""
-                        //             }
-                        //         ],
-                        //         "body": {
-                        //             "mode": "raw",
-                        //             "raw": "{\r\n\"ak\":\"ak\",\r\n\"sk\":\"sk\",\r\n\"method\":\"POST\",\r\n\"url\":\"http://testlfs.powerapp.io/lfs/v3/cdn/_prefetch\"\r\n}"
-                        //         },
-                        //         "description": "batch send auth"
-                        //     },
-                        //     "response": []
-                        // };
                         $.ajax({
                             url: '/api/collection/run',
                             type: "POST",
