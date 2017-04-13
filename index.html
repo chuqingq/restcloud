@@ -99,16 +99,16 @@
             <!-- left tree -->
             <div class="col-md-3" style="overflow:auto; ">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default glyphicon glyphicon-folder-open" :class="{disabled: !isFolder}" @click="appendFolder"></button>
-                    <button type="button" class="btn btn-default glyphicon glyphicon-file" :class="{disabled: !isFolder}" @click="appendFile"></button>
+                    <button type="button" class="btn btn-default glyphicon glyphicon-folder-open" data-toggle="tooltip" title="Add folder" :class="{disabled: !isFolder}" @click="appendFolder"></button>
+                    <button type="button" class="btn btn-default glyphicon glyphicon-file" data-toggle="tooltip" title="Add file" :class="{disabled: !isFolder}" @click="appendFile"></button>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default glyphicon glyphicon-duplicate" :class="{disabled: !current}" @click="duplicateNode"></button>
-                    <button type="button" class="btn btn-default glyphicon glyphicon-trash" :class="{disabled: !current}" @click="deleteNode"></button>
+                    <button type="button" class="btn btn-default glyphicon glyphicon-duplicate" data-toggle="tooltip" title="Duplicate" :class="{disabled: !current}" @click="duplicateNode"></button>
+                    <button type="button" class="btn btn-default glyphicon glyphicon-trash" data-toggle="tooltip" title="Delete" :class="{disabled: !current}" @click="deleteNode"></button>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default glyphicon glyphicon-floppy-disk" @click="save"></button>
-                    <button type="button" class="btn btn-default glyphicon glyphicon-save" @click="exportToJson"></button>
+                    <button type="button" class="btn btn-default glyphicon glyphicon-floppy-disk" data-toggle="tooltip" title="Save" @click="save"></button>
+                    <button type="button" class="btn btn-default glyphicon glyphicon-save" data-toggle="tooltip" title="export" @click="exportToJson"></button>
                 </div>
                 <br><br>
                 <div class="input-group">
@@ -557,6 +557,9 @@
                             if (data.username) {
                                 vm.username = data.username;
                                 vm.data = data.collection;
+                                vm.$nextTick(function() {
+                                    $('[data-toggle="tooltip"]').tooltip({container: 'body'});
+                                });
                             }
                         });
                     },
@@ -567,8 +570,7 @@
                         $.post('/api/user/login', {username, password}, function(data) {
                             if (!data.ret) {
                                 vm.username = username;
-                                vm.data = data.collection;
-                                console.log('username: ' + username);
+                                vm.session();
                             }
                             else {
                                 alert('用户名或密码不正确');
