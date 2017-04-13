@@ -21,6 +21,10 @@
     <![endif]-->
 
     <style type="text/css">
+        [v-cloak] {
+            display: none;
+        }
+
         .nav-active-my {
             color: #FFFFFF;
             background-color: #428bca;
@@ -34,7 +38,7 @@
 </head>
 
 <body>
-    <div id="wrapper">
+    <div id="wrapper" v-cloak>
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container-fluid">
@@ -533,7 +537,7 @@
                       };
                     },
                     isFolder: function() {
-                        return !!this.current&&!!this.current.item
+                        return !this.current||!!this.current.item
                     },
                 },
                 watch: {
@@ -576,7 +580,6 @@
                         $.post('/api/user/logout', {}, function(data) {
                             if (!data.ret) {
                                 vm.username = '';
-                                console.log('username: ' + username);
                             }
                             else {
                                 alert('登出失败');
@@ -615,7 +618,7 @@
                     
                     appendFolder () {
                         if (!this.current) {
-                            return
+                            this.current = vm.data;
                         }
                         console.log(JSON.stringify(this.current))
                         this.current.item.push({name: 'NEW FOLDER', item: []})
@@ -623,7 +626,7 @@
                     },
                     appendFile () {
                         if (!this.current) {
-                            return
+                            this.current = vm.data;
                         }
                         const EMPTY_ITEM = {
                           "name": "NEW FILE",
@@ -660,7 +663,7 @@
                           }
                         };
                         this.current.item.push(EMPTY_ITEM);
-                        this.current.item.open = true
+                        this.current.open = true
                     },
                     deleteNode () {
                         if (!this.current) {

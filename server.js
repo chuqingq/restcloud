@@ -73,6 +73,18 @@ app.use(session({
     // cookie TODO 是否要设置maxAge
 }));
 
+// 获取user的collection，如果不存在，则返回空模板
+function getUserCollection(username, callback) {
+    var collectionFile = username+'_collection.json';
+    fs.access(collectionFile, function(err) {
+        var collection = EMPTY_COLLECTION;
+        if (!err) {
+            collection = JSON.parse(fs.readFileSync(collectionFile));
+        }
+        callback(collection);
+    });
+}
+
 app.post('/api/user/login', function(req, res) {
     console.log('/api/user/login username: ' + req.body.username);
     console.log('/api/user/login password: ' + req.body.password);
@@ -92,11 +104,7 @@ app.post('/api/user/login', function(req, res) {
     }
     req.session.save();
     var collectionFile = req.session.username+'_collection.json';
-    fs.access(collectionFile, function(err) {
-        var collection = EMPTY_COLLECTION;
-        if (!err) {
-            collection = JSON.parse(fs.readFileSync(collectionFile));
-        }
+    getUserCollection(req.session.username, function(collection) {
         res.json({
             username: req.session.username,
             collection: collection
@@ -118,9 +126,11 @@ app.get('/api/session', function(req, res) {
         res.json({ret:-1, msg: '会话无效'});
         return
     }
-    res.json({
-        username: req.session.username,
-        collection: JSON.parse(fs.readFileSync(req.session.username+'_collection.json'))
+    getUserCollection(req.session.username, function(collection) {
+        res.json({
+            username: req.session.username,
+            collection: collection
+        });
     });
 });
 // 获取数据
@@ -130,14 +140,8 @@ app.get('/api/collection/get', function(req, res) {
         res.send({ret:-1,msg:'会话失效'})
         return;
     }
-    var collectionFile = req.session.username + '_collection.json';
-    fs.exists(collectionFile, function(err) {
-        if (err) {
-            fs.writeFileSync(collectionFile, JSON.stringify(EMPTY_COLLECTION, null, '  '));
-        }
-        var content = fs.readFileSync();
-        // TODO 如果文件不存在，则回复一个空的模板
-        res.send(content);
+    getUserCollection(req.session.username, function(collection) {
+        res.json(collection);
     });
 });
 // 保存所有数据
@@ -162,16 +166,7 @@ app.post('/api/collection/run', function(req, res) {
         return;
     }
     // TODO collection做成一个模板
-    var collection = {
-        "variables": [],
-        "info": {
-            "name": "LFS",
-            "_postman_id": "21bc3569-1f52-dd22-eeef-671dd971a9ca",
-            "description": "",
-            "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
-        },
-        "item": []
-    };
+    var collection = JSON.parse(JSON.stringify(EMPTY_COLLECTION));
     collection.item = [req.body];
     // console.log('==== collection: ' + JSON.stringify(collection, null, '  '));
 
