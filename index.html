@@ -240,13 +240,17 @@
 
                     <!-- response -->
                     <div class="panel panel-default" v-if="current.response!=null&&current.response[0]!=null">
-                        <div class="panel-heading">
-                            <span>Response Status: </span>
+                        <div class="panel-heading" v-if="!!current.response[0].code">
+                            <span>Response</span>
+                            <span> Status: </span>
                             <span class="label label-default"> {{current.response[0].code + ' ' + current.response[0].status}} </span>
                             <span> Time: </span>
                             <span class="label label-default"> {{current.response[0].responseTime}} ms </span>
                         </div>
-                        <div class="panel-body">
+                        <div class="panel-heading" v-else>
+                            <span>Error</span>
+                        </div>
+                        <div class="panel-body" v-if="!!current.response[0].code">
                             <div class="form-group">
                                 <ul class="nav nav-tabs" role="tablist">
                                   <li @click="showResponseBody('header');" :class="{active: current.showResponseBody=='header'}"><a href="#header">Headers</a></li>
@@ -274,6 +278,10 @@
                                 <textarea class="form-control" rows=8 v-model="current.tests"></textarea>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="jumbotron" v-else>
+                        <h2 align="center">Loading...</h2>
                     </div>
                 </div>
                 <!-- /.row -->
@@ -736,6 +744,7 @@
 
                     send: function() {
                         console.log('/api/collection/run: ', JSON.stringify(this.current));
+                        this.current.response = null;
                         $.ajax({
                             url: '/api/collection/run',
                             type: "POST",
