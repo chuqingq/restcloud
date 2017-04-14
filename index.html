@@ -238,7 +238,6 @@
                         <textarea class="form-control" rows=8 v-model="current.tests"></textarea>
                     </div>
 
-
                     <!-- response -->
                     <div class="panel panel-default" v-if="current.response!=null&&current.response[0]!=null">
                         <div class="panel-heading" v-if="!!current.response[0].code">
@@ -292,7 +291,7 @@
                         </div>
                     </div>
 
-                    <div class="jumbotron" v-else>
+                    <div class="jumbotron" v-if="current.response!=null&&current.response[0]==null">
                         <h2 align="center">Loading...</h2>
                     </div>
                 </div>
@@ -762,7 +761,7 @@
                         console.log('/api/collection/run: ', JSON.stringify(this.current));
                         // this.current.response = null;
                         var cur = vm.current;
-                        vm.$delete(cur, 'response');
+                        vm.$set(cur, 'response', []);
                         $.ajax({
                             url: '/api/collection/run',
                             type: "POST",
