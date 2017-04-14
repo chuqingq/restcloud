@@ -4,23 +4,24 @@
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "express-session": "^1.15.2",
+    "log": "^1.4.0",
     "newman": "^3.5.2"
   },
   "config": {
-  	"user": [
-  		{
-  			"username": "user1",
-  			"password": "user1"
-  		},
-  		{
-  			"username": "user2",
-  			"password": "user2"
-  		},
+    "user": [
+      {
+        "username": "user1",
+        "password": "user1"
+      },
+      {
+        "username": "user2",
+        "password": "user2"
+      },
       {
         "username": "lujiang",
         "password": "lujiang"
       }
-  	]
+    ]
   },
   "scripts": {
     "start": "screen -dmS chuqq-postman node server.js"

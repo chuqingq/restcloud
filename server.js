@@ -7,6 +7,9 @@ var newman = require('newman');
 
 var config = require('./package.json').config;
 
+var Log = require('log')
+  , log = new Log('debug', fs.createWriteStream('chuqq-postman.log'));
+
 const EMPTY_ITEM = {
     "name": "NEW FILE",
     "event": [
@@ -86,8 +89,8 @@ function getUserCollection(username, callback) {
 }
 
 app.post('/api/user/login', function(req, res) {
-    console.log('/api/user/login username: ' + req.body.username);
-    console.log('/api/user/login password: ' + req.body.password);
+    log.debug('/api/user/login username: ' + req.body.username);
+    log.debug('/api/user/login password: ' + req.body.password);
     // 校验用户
     for (var i = 0; i < config.user.length; i++) {
         var user = config.user[i];
@@ -98,7 +101,7 @@ app.post('/api/user/login', function(req, res) {
             break;
         }
     }
-    console.log('username: ' + req.session.username);
+    log.debug('username: ' + req.session.username);
     if (!req.session.username) {
         res.json({ret: -1, msg: '用户名或密码无效'})
     }
@@ -112,9 +115,9 @@ app.post('/api/user/login', function(req, res) {
     });
 });
 app.post('/api/user/logout', function(req, res) {
-    console.log('/api/user/logout username: ' + req.session.username);
+    log.debug('/api/user/logout username: ' + req.session.username);
     if (!req.session.username) {
-        console.log('/api/user/logout not longined');
+        log.debug('/api/user/logout not longined');
         res.json({ret: 400, msg: 'not logined'});
         return;
     }
@@ -135,7 +138,7 @@ app.get('/api/session', function(req, res) {
 });
 // 获取数据
 app.get('/api/collection/get', function(req, res) {
-    console.log('/api/collection/get:');
+    log.debug('/api/collection/get:');
     if (!req.session.username) {
         res.send({ret:-1,msg:'会话失效'})
         return;
@@ -146,21 +149,21 @@ app.get('/api/collection/get', function(req, res) {
 });
 // 保存所有数据
 app.post('/api/collection/saveall', function(req, res) {
-    console.log('/api/collection/saveall: ');
+    log.debug('/api/collection/saveall: ');
     // 需要Content-Type是application/json
     if (!req.session.username) {
         res.json({ret:-1,msg:'会话失效'});
         return;
     }
     var output = JSON.stringify(req.body, null, '  ');
-    console.log('output: ' + output);
+    log.debug('output: ' + output);
     fs.writeFileSync(req.session.username+'_collection.json', output);
     res.json({});
 });
 // 运行一个请求
 app.post('/api/collection/run', function(req, res) {
     // 请求的body是个request，响应的body是response
-    console.log('/api/collection/run: ' + req.body.method + ' ' + req.body.name);
+    log.debug('/api/collection/run: ' + req.body.method + ' ' + req.body.name);
     if (!req.session.username) {
         res.json({ret:-1,msg:'会话失效'});
         return;
@@ -174,9 +177,9 @@ app.post('/api/collection/run', function(req, res) {
         collection: collection,
         reporters: 'json'
     }, function(err, res2) {
-        console.log('newman.run err: ', err, ' res: ', res2);
+        log.debug('newman.run err: ', err, ' res: ', res2);
         if (err) {
-            console.log('newman.run error: ', err); /*TODO 返回错误*/
+            log.error('newman.run error: ', err); /*TODO 返回错误*/
         }
         res.send(res2.run.executions[0].response);
     });
