@@ -108,7 +108,8 @@
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-default glyphicon glyphicon-floppy-disk" data-toggle="tooltip" title="Save" :class="{disabled: !needSave}" @click="save();return true;"></button>
-                    <button type="button" class="btn btn-default glyphicon glyphicon-save" data-toggle="tooltip" title="Export" @click="exportToJson"></button>
+                    <button type="button" class="btn btn-default glyphicon glyphicon-import" data-toggle="tooltip" title="Import" @click="importCollection"></button>
+                    <button type="button" class="btn btn-default glyphicon glyphicon-export" data-toggle="tooltip" title="Export" @click="exportCollection"></button>
                 </div>
                 <br><br>
                 <div class="input-group">
@@ -573,7 +574,7 @@
                                 vm.data = data.collection;
                                 vm.needSave = false;
                                 vm.$nextTick(function() {
-                                    $('[data-toggle="tooltip"]').tooltip({container: 'body'});
+                                    $('[data-toggle="tooltip"]').tooltip({container: 'body', trigger: 'hover'});
                                 });
                             }
                         });
@@ -642,7 +643,7 @@
                         this.current.item.push(newFolder)
                         this.current.open = true;
                         this.current = newFolder;
-                        $(':focus').focusout();
+                        // $(':focus').focusout();
                     },
                     appendFile () {
                         if (!this.current) {
@@ -685,7 +686,7 @@
                         this.current.item.push(newFile);
                         this.current.open = true;
                         this.current = newFile;
-                        $(':focus').focusout();
+                        // $(':focus').focusout();
                     },
                     deleteNode () {
                         if (!this.current) {
@@ -700,7 +701,7 @@
                             array.splice(array.indexOf(this.current), 1)
                         }
                         this.current = null;
-                        $(':focus').focusout();
+                        // $(':focus').focusout();
                     },
                     duplicateNode () {
                         if (!this.current) {
@@ -714,7 +715,7 @@
                         if (array) {
                             array.splice(array.indexOf(this.current)+1, 0, newNode)
                         }
-                        $(':focus').focusout();
+                        // $(':focus').focusout();
                     },
                     save () {
                         // data保存到服务端
@@ -727,13 +728,17 @@
                             success: function(data){
                                 console.log('/api/saveall res: ', data);
                                 vm.needSave = false;
-                                $(':focus').focusout()
+                                // $(':focus').focusout()
                             }
                         });
                     },
-                    exportToJson () {
+                    importCollection () {
+                        // TODO 导入
+                        // $(':focus').focusout();
+                    },
+                    exportCollection () {
                         // TODO 导出
-                        $(':focus').focusout();
+                        // $(':focus').focusout();
                     },
 
                     // response

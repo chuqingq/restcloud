@@ -15,7 +15,14 @@
   		{
   			"username": "user2",
   			"password": "user2"
-  		}
+  		},
+      {
+        "username": "lujiang",
+        "password": "lujiang"
+      }
   	]
+  },
+  "scripts": {
+    "start": "screen -dmS chuqq-postman node server.js"
   }
 }
