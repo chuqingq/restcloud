@@ -249,7 +249,7 @@
                             <span class="label label-default"> {{current.response[0].responseTime}} ms </span>
                         </div>
                         <div class="panel-heading" v-else>
-                            <span>Error</span>
+                            <span>Response</span>
                         </div>
                         <div class="panel-body" v-if="!!current.response[0].code">
                             <div class="form-group">
@@ -278,6 +278,17 @@
                             <div class="form-group" v-if="current.showResponseBody=='tests'">
                                 <textarea class="form-control" rows=8 v-model="current.tests"></textarea>
                             </div>
+                        </div>
+                        <div class="panel-body" v-else>
+                            <h2>Could not get any response</h2>
+                            <p>There was an error connecting to server</p>
+                            <h4>Why this might have happended:</h4>
+                            <ul>
+                                <li>The server couldn't send a response: Ensure that the backend is working properly</li>
+                                <li>SSL connections are being blocked: Fix this by importing SSL certificates in Chrome</li>
+                                <li>Cookies are not beeing sent</li>
+                                <li>Request timeout</li>
+                            </ul>
                         </div>
                     </div>
 
