@@ -259,7 +259,7 @@
                                 </ul>
                             </div>
                             <!-- response header -->
-                            <div v-if="current.showResponseBody==null||current.showResponseBody=='header'">
+                            <div v-if="current.showResponseBody=='header'">
                                 <div class="form-group" v-for="(h, index) in current.response[0].header">
                                     <div class="input-group">
                                         <span class="label label-default">{{h.key}}</span>
@@ -269,7 +269,7 @@
                             </div>
 
                             <!-- response body -->
-                            <div class="form-group" v-if="current.showResponseBody=='body'">
+                            <div class="form-group" v-if="current.showResponseBody==null||current.showResponseBody=='body'">
                                 <textarea class="form-control" rows=8 v-model="current.response[0].body" readonly></textarea>
                             </div>
 
@@ -744,7 +744,9 @@
 
                     send: function() {
                         console.log('/api/collection/run: ', JSON.stringify(this.current));
-                        this.current.response = null;
+                        // this.current.response = null;
+                        var cur = vm.current;
+                        vm.$delete(cur, 'response');
                         $.ajax({
                             url: '/api/collection/run',
                             type: "POST",
@@ -757,8 +759,7 @@
                                     vm.username = '';
                                     return;
                                 }
-                                // vm.current.response = [data];
-                                vm.$set(vm.current, 'response', [data]);
+                                vm.$set(cur, 'response', [data]);
                             }
                         });
                     }
