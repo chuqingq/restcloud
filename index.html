@@ -292,7 +292,7 @@
                         </div>
                     </div>
 
-                    <div class="jumbotron" v-if="current.response!=null&&current.response[0]==null">
+                    <div class="jumbotron" v-if="current.response==null">
                         <h2 align="center">Loading...</h2>
                     </div>
                 </div>
@@ -328,132 +328,6 @@
     </script>
 
     <script type="text/javascript">
-        // vue.js相关
-        var data = {
-            // current: null,
-            item: [{
-                name: 'xpush',
-                description: "this is xpush dir",
-                // open: true,
-                item: [{
-                    "name": "cdn/_prefetch sign",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "type": "text/javascript",
-                                "exec": [
-                                    "var jsonData = JSON.parse(responseBody);",
-                                    "postman.setGlobalVariable(\"sign\", jsonData.authorization);",
-                                    "",
-                                    "tests[\"Body matches authorization\"] ",
-                                    "= responseBody.has(\"authorization\");"
-                                ]
-                            }
-                        }
-                    ],
-                    "request": {
-                        "url": "http://testlfs.powerapp.io/push/v1/stub/aksk/sign",
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json",
-                                "description": ""
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\r\n\"ak\":\"ak\",\r\n\"sk\":\"sk\",\r\n\"method\":\"POST\",\r\n\"url\":\"http://testlfs.powerapp.io/lfs/v3/cdn/_prefetch\"\r\n}"
-                        },
-                        "description": "batch send auth"
-                    },
-                    "response": []
-                }, {
-                    name: 'POST /push/_single_send',
-                    request: {
-                        method: 'POST',
-                        url: 'https://{{baseurl}}/push/_single_send',
-                        authorization: 'this is authorization',
-                        body: 'this is body',
-                    },
-                    response: {},
-                    tests: 'this is tests'
-                }, {
-                    name: 'query status',
-                    item: [{
-                        name: 'GET /push/device_status',
-                        request: {
-                            method: 'POST',
-                            url: 'https://{{baseurl}}/push/device_status',
-                            authorization: 'this is authorization',
-                            body: 'this is body',
-                        },
-                        response: {},
-                        tests: 'this is tests'
-                    }, {
-                        name: 'GET /push/message_status',
-                        request: {
-                            method: 'POST',
-                            url: 'https://{{baseurl}}/push/message_status',
-                            authorization: 'this is authorization',
-                            body: 'this is body',
-                        },
-                        response: {},
-                        tests: 'this is tests'
-                    }]
-                }]
-            }, {
-                name: 'lfs',
-                // open: false,
-                item: [{
-                    name: 'POST /lfs/_allot_pusher',
-                    request: {
-                        method: 'POST',
-                        url: 'https://{{baseurl}}/lfs/_allot_pusher',
-                        authorization: 'this is authorization',
-                        body: 'this is body',
-                    },
-                    response: {},
-                    tests: 'this is tests'
-                }, {
-                    name: 'POST /lfs/_single_send',
-                    request: {
-                        method: 'POST',
-                        url: 'https://{{baseurl}}/lfs/_single_send',
-                        authorization: 'this is authorization',
-                        body: 'this is body',
-                    },
-                    response: {},
-                    tests: 'this is tests'
-                }, {
-                    name: 'query status',
-                    // open: false,
-                    item: [{
-                        name: 'GET /lfs/device_status',
-                        request: {
-                            method: 'POST',
-                            url: 'https://{{baseurl}}/lfs/device_status',
-                            authorization: 'this is authorization',
-                            body: 'this is body',
-                        },
-                        response: {},
-                        tests: 'this is tests'
-                    }, {
-                        name: 'GET /lfs/message_status',
-                        request: {
-                            method: 'POST',
-                            url: 'https://{{baseurl}}/lfs/message_status',
-                            authorization: 'this is authorization',
-                            body: 'this is body',
-                        },
-                        response: {},
-                        tests: 'this is tests'
-                    }]
-                }]
-            }]
-        };
-
         $(function() {
             vm = null
 
@@ -692,7 +566,8 @@
                               "raw": "{\r\n\"ak\":\"ak\",\r\n\"sk\":\"sk\",\r\n\"method\":\"POST\",\r\n\"url\":\"http://testlfs.powerapp.io/lfs/v3/cdn/_prefetch\"\r\n}"
                             },
                             "description": "batch send auth"
-                          }
+                          },
+                          "response": []
                         };
                         this.current.item.push(newFile);
                         this.current.open = true;
@@ -762,7 +637,7 @@
                         console.log('/api/collection/run: ', JSON.stringify(this.current));
                         // this.current.response = null;
                         var cur = vm.current;
-                        vm.$set(cur, 'response', []);
+                        vm.$delete(cur, 'response');// loading
                         $.ajax({
                             url: '/api/collection/run',
                             type: "POST",
