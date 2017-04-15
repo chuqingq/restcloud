@@ -330,6 +330,34 @@
     </script>
 
     <script type="text/javascript">
+        function downloadFile(fileName, content){
+            var aLink = document.createElement('a');
+            var blob = new Blob([content]);
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错, 感谢 Barret Lee 的反馈
+            aLink.download = fileName;
+            aLink.href = URL.createObjectURL(blob);
+            aLink.dispatchEvent(evt);
+        }
+
+        const collectionStr = `{
+		    "variables": [],
+		    "info": {
+		        "name": "LFS",
+		        "_postman_id": "21bc3569-1f52-dd22-eeef-671dd971a9ca",
+		        "description": "",
+		        "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+		    },
+		    "item": [
+		        {
+		            "name": "NEW FOLDER",
+		            "description": "",
+		            "item": [
+		            ]
+		        }
+		    ]
+		}`;
+
         $(function() {
             vm = null
 
@@ -649,8 +677,12 @@
                         $("#importFile").click();
                     },
                     exportCollection () {
-                        // TODO 导出
-                        // $(':focus').focusout();
+                        // 导出
+                        console.log('exportCollection:');
+                        var collection = JSON.parse(collectionStr);
+                        collection.item = vm.data.item;
+                        var str = JSON.stringify(collection, null, '  ');
+                        downloadFile('collection.json', new Blob([str]));
                     },
 
                     // response
