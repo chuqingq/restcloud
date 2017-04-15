@@ -273,7 +273,7 @@
 
                             <!-- response body -->
                             <div class="form-group" v-if="current.showResponseBody==null||current.showResponseBody=='body'">
-                                <textarea class="form-control" rows=8 v-model="current.response[0].body" readonly></textarea>
+                                <textarea class="form-control" rows=8 readonly>{{current.response[0].body | jsonFormat}}</textarea>
                             </div>
 
                             <!-- response tests -->
@@ -478,6 +478,17 @@
                         },
                         deep: true
                     }
+                },
+                filters: {
+                	jsonFormat: function(value) {
+                		var json = value;
+                		try {
+                			var j = JSON.parse(value);
+                			json = JSON.stringify(j, null, '    ');
+                		} catch (ex) {
+                		}
+                		return json;
+                	}
                 },
                 methods: {
                     // 判断是否已登录
