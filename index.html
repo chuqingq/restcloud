@@ -110,6 +110,8 @@
                 <div class="btn-group">
                     <button type="button" class="btn btn-default glyphicon glyphicon-floppy-disk" data-toggle="tooltip" title="Save" :class="{disabled: !needSave}" @click="save();return true;"></button>
                     <button type="button" class="btn btn-default glyphicon glyphicon-import" data-toggle="tooltip" title="Import" @click="importCollection"></button>
+                    <!-- <button type="button" class="btn btn-default glyphicon glyphicon-import" data-toggle="modal" data-target=".import-modal"></button> -->
+                    <input id="importFile" type="file" accept="application/json" style="display:none">
                     <button type="button" class="btn btn-default glyphicon glyphicon-export" data-toggle="tooltip" title="Export" @click="exportCollection"></button>
                 </div>
                 <br><br>
@@ -127,7 +129,7 @@
                 </draggable>
             </div>
 
-            <div id="page-wrapper" class="col-md-9" v-if="current!=null">
+            <div class="col-md-9" v-if="current!=null">
                 <!-- name -->
                 <div class="form-group">
                     <div class="input-group">
@@ -619,8 +621,32 @@
                         });
                     },
                     importCollection () {
-                        // TODO 导入
-                        // $(':focus').focusout();
+                        // 导入
+                        $('#importFile').change(function(event) {
+                            var html = $('#importFile')[0].outerHTML;
+                            // 导入
+                            console.log('importFile change: ' + $('#importFile')[0].files[0].name);
+                            var fileReader = new FileReader();
+                            fileReader.onload = function() {
+                                // TODO
+                                console.log('json: ' + this.result);
+                                var importCollection = JSON.parse(this.result);
+                                vm.$set(vm.data, 'item', vm.data.item.concat(importCollection.item));
+                                vm.save();
+                            }
+                            fileReader.readAsText($('#importFile')[0].files[0]);
+                            // 替换原来的节点，避免重复change事件
+                            $('#importFile').replaceWith(html);
+                        });
+                        // 清空file
+                        // var file = $('#importFile')[0];
+                        // if (file.outerHTML) { //IE，Safari，chrome
+                        //        file.outerHTML=file.outerHTML;
+                        // }
+                        // else { //FF
+                              // file.value="";
+                        // }
+                        $("#importFile").click();
                     },
                     exportCollection () {
                         // TODO 导出
