@@ -10,16 +10,20 @@
   "config": {
     "user": [
       {
-        "username": "user1",
-        "password": "user1"
-      },
-      {
-        "username": "user2",
-        "password": "user2"
+        "username": "temp",
+        "password": "temp"
       },
       {
         "username": "lujiang",
         "password": "lujiang"
+      },
+      {
+        "username": "chenfei",
+        "password": "chenfei"
+      },
+      {
+        "username": "xuwentao",
+        "password": "xuwentao"
       }
     ]
   },
