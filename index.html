@@ -257,9 +257,9 @@
                         <div class="panel-body" v-if="!!current.response[0].code">
                             <div class="form-group">
                                 <ul class="nav nav-tabs" role="tablist">
-                                  <li @click="showResponseBody('header');" :class="{active: current.showResponseBody=='header'}"><a href="#header">Headers</a></li>
-                                  <li @click="showResponseBody('body');" :class="{active: current.showResponseBody==null||current.showResponseBody=='body'}"><a href="#body">Body</a></li>
-                                  <li @click="showResponseBody('tests');" :class="{active: current.showResponseBody=='tests'}"><a href="#tests">Tests</a></li>
+                                  <li @click="showResponseBody('header');" :class="{active: current.showResponseBody=='header'}"><a href="#">Headers</a></li>
+                                  <li @click="showResponseBody('body');" :class="{active: current.showResponseBody==null||current.showResponseBody=='body'}"><a href="#">Body</a></li>
+                                  <li @click="showResponseBody('tests');" :class="{active: current.showResponseBody=='tests'}"><a href="#">Tests</a></li>
                                 </ul>
                             </div>
                             <!-- response header -->
@@ -279,7 +279,7 @@
 
                             <!-- response tests -->
                             <div class="form-group" v-if="current.showResponseBody=='tests'">
-                                <textarea class="form-control" rows=8 v-model="current.tests"></textarea>
+                                <textarea class="form-control" rows=8>{{current.response[0].tests}}</textarea>
                             </div>
                         </div>
                         <div class="panel-body" v-else>
