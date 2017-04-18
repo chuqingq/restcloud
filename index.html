@@ -201,7 +201,7 @@
                     <!-- bodyTabs -->
                     <div class="form-group">
                         <ul class="nav nav-tabs" role="tablist" id="bodyTabs">
-                          <li @click="showBody('header');" :class="{active: showRequestBody=='header'}"><a href="javascript:void(0);">Headers</a></li>
+                          <li @click="showBody('header');" :class="{active: showRequestBody=='header'}"><a href="javascript:void(0);">Headers <span class="badge">{{current.request.header.length}}</span></a></li>
                           <li @click="showBody('body');" :class="{active: showRequestBody=='body', disabled: current.request.method=='GET'}"><a href="javascript:void(0);">Body</a></li>
                           <li @click="showBody('tests');" :class="{active: showRequestBody=='tests'}"><a href="javascript:void(0);">Tests</a></li>
                         </ul>
@@ -257,7 +257,7 @@
                         <div class="panel-body" v-if="!!current.response[0].code">
                             <div class="form-group">
                                 <ul class="nav nav-tabs" role="tablist">
-                                  <li @click="showResponseBody('header');" :class="{active: current.showResponseBody=='header'}"><a href="javascript:void(0);">Headers</a></li>
+                                  <li @click="showResponseBody('header');" :class="{active: current.showResponseBody=='header'}"><a href="javascript:void(0);">Headers <span class="badge">{{current.response[0].header.length}}</span></a></li>
                                   <li @click="showResponseBody('body');" :class="{active: current.showResponseBody==null||current.showResponseBody=='body'}"><a href="javascript:void(0);">Body</a></li>
                                   <li @click="showResponseBody('tests');" :class="{active: current.showResponseBody=='tests'}"><a href="javascript:void(0);">Tests</a></li>
                                 </ul>
