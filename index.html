@@ -208,7 +208,7 @@
                     </div>
 
                     <!-- headers -->
-                    <div v-if="current.request.method=='GET'||current.showBody=='header'">
+                    <div v-if="current.request.method=='GET'&&current.showBody==null||current.showBody=='header'">
                         <div class="form-group" v-for="(h, index) in current.request.header">
                              <div class="row">
                                 <div class="col-md-4">
