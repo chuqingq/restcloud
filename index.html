@@ -234,12 +234,12 @@
 
                     <!-- body -->
                     <div class="form-group" v-if="showRequestBody=='body'">
-                        <textarea class="form-control" rows=8 v-model="current.request.body.raw"></textarea>
+                        <textarea class="form-control" rows=8 v-model="current.request.body.raw" style="resize: vertical;"></textarea>
                     </div>
 
                     <!-- tests -->
                     <div class="form-group" v-if="showRequestBody=='tests'">
-                        <textarea class="form-control" rows=8 v-model="current.tests"></textarea>
+                        <textarea class="form-control" rows=8 v-model="current.tests" style="resize: vertical;"></textarea>
                     </div>
 
                     <!-- response -->
@@ -274,12 +274,13 @@
 
                             <!-- response body -->
                             <div class="form-group" v-if="current.showResponseBody==null||current.showResponseBody=='body'">
-                                <textarea class="form-control" rows=8 readonly>{{current.response[0].body | jsonFormat}}</textarea>
+                                <textarea class="form-control" style="resize: vertical;" rows=8 readonly>{{current.response[0].body | jsonFormat}}</textarea>
                             </div>
 
                             <!-- response tests -->
                             <div class="form-group" v-if="current.showResponseBody=='tests'">
-                                <textarea class="form-control" rows=8>{{current.response[0].tests}}</textarea>
+                                <!-- TODO -->
+                                <textarea class="form-control" style="resize: vertical;" rows=8 readonly>{{current.response[0].tests}}</textarea>
                             </div>
                         </div>
                         <div class="panel-body" v-else>
