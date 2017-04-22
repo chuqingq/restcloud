@@ -108,7 +108,7 @@
                     <button type="button" class="btn btn-default glyphicon glyphicon-trash" data-toggle="tooltip" title="Delete" :class="{disabled: !current}" @click="deleteNode"></button>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default glyphicon glyphicon-floppy-disk" data-toggle="tooltip" title="Save" :class="{disabled: !needSave}" @click="save();return true;"></button>
+                    <!-- <button type="button" class="btn btn-default glyphicon glyphicon-floppy-disk" data-toggle="tooltip" title="Save" :class="{disabled: !needSave}" @click="save();return true;"></button> -->
                     <button type="button" class="btn btn-default glyphicon glyphicon-import" data-toggle="tooltip" title="Import" @click="importCollection"></button>
                     <!-- <button type="button" class="btn btn-default glyphicon glyphicon-import" data-toggle="modal" data-target=".import-modal"></button> -->
                     <input id="importFile" type="file" accept="application/json" style="display:none">
@@ -767,7 +767,8 @@
 
             window.onbeforeunload = function() {
                 if (vm.needSave) {
-                    return '还未保存！';
+                    // return '还未保存！';
+                    vm.save();
                 }
             }
 
