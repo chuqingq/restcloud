@@ -127,7 +127,7 @@
                 </div>
                 <br>
                 <div style="height: 88%;overflow:auto;">
-                    <draggable element="ul" v-model="data.item" style="min-height: 20px;" class="nav" :options="dragOptions" @start="onDragStart" @end="onDragEnd">
+                    <draggable element="ul" v-model="data.item" class="nav" :options="dragOptions" @start="onDragStart" @end="onDragEnd">
                         <item v-for="model in data.item" :model="model" :current="current" :drag="drag"></item>
                     </draggable>
                 </div>
