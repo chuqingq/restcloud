@@ -101,8 +101,8 @@
             <!-- left tree -->
             <div class="col-md-3" style="height: 100%">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default glyphicon glyphicon-folder-open" data-toggle="tooltip" title="Add folder" :class="{disabled: !isFolder}" @click="appendFolder"></button>
-                    <button type="button" class="btn btn-default glyphicon glyphicon-file" data-toggle="tooltip" title="Add file" :class="{disabled: !isFolder}" @click="appendFile"></button>
+                    <button type="button" class="btn btn-default glyphicon glyphicon-folder-open" data-toggle="tooltip" title="Add folder" @click="appendFolder"></button>
+                    <button type="button" class="btn btn-default glyphicon glyphicon-file" data-toggle="tooltip" title="Add file" @click="appendFile"></button>
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-default glyphicon glyphicon-duplicate" data-toggle="tooltip" title="Duplicate" :class="{disabled: !current}" @click="duplicateNode"></button>
@@ -596,17 +596,26 @@
                     },
                     
                     appendFolder () {
+                        console.log('appendFolder');
                         if (!this.current) {
                             this.current = vm.data;
                         }
-                        console.log(JSON.stringify(this.current))
                         var newFolder = {name: 'NEW FOLDER', item: []};
-                        this.current.item.push(newFolder)
-                        this.current.open = true;
+                        var item;
+                        if (this.isFolder) {
+                            // this.current.item.push(newFolder)
+                            // this.current.open = true;
+                            item = this.current.item;
+                            this.current.open = true;
+                        } else {
+                            item = getArray(this.current, vm.data.item);
+                        }
+                        item.push(newFolder)
                         this.current = newFolder;
                         // $(':focus').focusout();
                     },
                     appendFile () {
+                        console.log('appendFile:');
                         if (!this.current) {
                             this.current = vm.data;
                         }
@@ -645,8 +654,14 @@
                           },
                           "response": []
                         };
-                        this.current.item.push(newFile);
-                        this.current.open = true;
+                        var item;
+                        if (this.isFolder) {
+                            item = this.current.item;
+                            this.current.open = true;
+                        } else {
+                            item = getArray(this.current, vm.data.item);
+                        }
+                        item.push(newFile);
                         this.current = newFile;
                         // $(':focus').focusout();
                     },
