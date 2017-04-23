@@ -433,7 +433,7 @@
                         console.log('item component: onStart');
                     },
                     onDragEnd: function() {
-                        this.$root.$set(this.$root.data, 'drag', false);
+                        this.$root.$set(this.$root, 'drag', false);
                         console.log('item component: onEnd');
                     }
                 }
