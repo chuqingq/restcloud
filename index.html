@@ -27,13 +27,14 @@
 
         .nav-active-my {
             color: #FFFFFF;
-            background-color: #428bca;
+            background-color: blue;
             border-radius: 4px;
         }
 
         .ghost {
           opacity: .5;
-          background: #C8EBFB;
+          background: blue;
+          border-radius: 4px;
         }
     </style>
 </head>
@@ -126,8 +127,8 @@
                 </div>
                 <br>
                 <div style="height: 88%;overflow:auto;">
-                    <draggable element="ul" v-model="data.item" class="nav" :options="dragOptions"> 
-                        <item v-for="model in data.item" :model="model" :current="current"></item>
+                    <draggable element="ul" v-model="data.item" style="min-height: 20px;" class="nav" :options="dragOptions" @start="onDragStart" @end="onDragEnd">
+                        <item v-for="model in data.item" :model="model" :current="current" :drag="drag"></item>
                     </draggable>
                 </div>
             </div>
@@ -327,8 +328,8 @@
                 <i @click="toggleFolder" class="glyphicon" :class="{'glyphicon-folder-open': isFolder&&model.open, 'glyphicon-folder-close': isFolder&&!model.open,'glyphicon-file': !isFolder}" :style="{cursor: isFolder?'pointer':'default'}"></i>
                 <span>{{model.name}}</span><!-- <div class="badge">4</div> -->
             </a>
-            <draggable v-model="model.item" element="ul" style="padding-left:1em" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions"> 
-                <item v-for="model in model.item" :model="model" :current="current"></item>
+            <draggable v-model="model.item" element="ul" style="padding-left:1em;" :style="{'min-height': drag?'20px':''}" class="nav" v-show="model.open" v-if="isFolder" :options="dragOptions" @start="onDragStart" @end="onDragEnd"> 
+                <item v-for="model in model.item" :model="model" :current="current" :drag="drag"></item>
             </draggable>
         </li>
     </script>
@@ -345,31 +346,41 @@
         // }
 
         const collectionStr = `{
-		    "variables": [],
-		    "info": {
-		        "name": "LFS",
-		        "_postman_id": "21bc3569-1f52-dd22-eeef-671dd971a9ca",
-		        "description": "",
-		        "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
-		    },
-		    "item": [
-		        {
-		            "name": "NEW FOLDER",
-		            "description": "",
-		            "item": [
-		            ]
-		        }
-		    ]
-		}`;
+            "variables": [],
+            "info": {
+                "name": "LFS",
+                "_postman_id": "21bc3569-1f52-dd22-eeef-671dd971a9ca",
+                "description": "",
+                "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+            },
+            "item": [
+                {
+                    "name": "NEW FOLDER",
+                    "description": "",
+                    "item": [
+                    ]
+                }
+            ]
+        }`;
 
         $(function() {
-            vm = null
+            vm = null;
+
+            var dragOptions = function() {
+              return  {
+                animation: 0,
+                group: 'description',
+                disabled: false,
+                ghostClass: 'ghost'
+              };
+            };
 
             Vue.component('item', {
                 template: '#item-template',
                 props: {
                     model: Object,
-                    current: Object
+                    current: Object,
+                    drag: Boolean
                 },
                 computed: {
                     isFolder: function() {
@@ -388,14 +399,7 @@
                         return obj
                     },
                     // vuedraggable
-                    dragOptions: function() {
-                      return  {
-                        animation: 0,
-                        group: 'description',
-                        disabled: false,
-                        ghostClass: 'ghost'
-                      };
-                    }
+                    dragOptions: dragOptions
                 },
                 methods: {
                     toggleFolder: function() {
@@ -423,6 +427,14 @@
                         if (array) {
                             array.push(newNode)
                         }
+                    },
+                    onDragStart: function() {
+                        this.$root.$set(this.$root, 'drag', true);
+                        console.log('item component: onStart');
+                    },
+                    onDragEnd: function() {
+                        this.$root.$set(this.$root.data, 'drag', false);
+                        console.log('item component: onEnd');
                     }
                 }
             });
@@ -454,18 +466,12 @@
                     username: '',
                     needSave: false,
                     current: null,
-                    data: {item: []}
+                    data: {item: []},
+                    drag: false // 表示正在拖拽
                 },
                 computed: {
                     // vuedraggable
-                    dragOptions: function() {
-                      return  {
-                        animation: 0,
-                        group: 'description',
-                        disabled: false,
-                        ghostClass: 'ghost'
-                      };
-                    },
+                    dragOptions: dragOptions,
                     isFolder: function() {
                         return !this.current||!!this.current.item
                     },
@@ -499,15 +505,15 @@
                     }
                 },
                 filters: {
-                	jsonFormat: function(value) {
-                		var json = value;
-                		try {
-                			var j = JSON.parse(value);
-                			json = JSON.stringify(j, null, '    ');
-                		} catch (ex) {
-                		}
-                		return json;
-                	}
+                    jsonFormat: function(value) {
+                        var json = value;
+                        try {
+                            var j = JSON.parse(value);
+                            json = JSON.stringify(j, null, '    ');
+                        } catch (ex) {
+                        }
+                        return json;
+                    }
                 },
                 methods: {
                     // 判断是否已登录
@@ -763,6 +769,15 @@
                         item.request.header = item.request.header.filter(function(header) {
                             return header.key
                         });
+                    },
+
+                    onDragStart: function() {
+                        this.drag = true;
+                        console.log('onStart');
+                    },
+                    onDragEnd: function() {
+                        this.drag = false;
+                        console.log('onEnd');
                     }
                 }
             });
