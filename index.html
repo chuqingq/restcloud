@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="height: 100%">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -39,8 +39,8 @@
     </style>
 </head>
 
-<body style="height: 100%">
-    <div id="wrapper" style="height: 100%" v-cloak>
+<body>
+    <div id="wrapper" v-cloak>
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container-fluid">
@@ -97,9 +97,9 @@
         </div>
 
         <!-- postman页面 -->
-        <div class="container-fluid" style="height: 90%;padding-left: 0" v-else>
+        <div class="container-fluid" style="padding-left: 0" v-else>
             <!-- left tree -->
-            <div class="col-md-3" style="height: 100%">
+            <div class="col-md-3">
                 <div class="btn-group">
                     <button type="button" class="btn btn-default glyphicon glyphicon-folder-open" data-toggle="tooltip" title="Add folder" @click="appendFolder"></button>
                     <button type="button" class="btn btn-default glyphicon glyphicon-file" data-toggle="tooltip" title="Add file" @click="appendFile"></button>
@@ -126,14 +126,14 @@
                     </span>
                 </div>
                 <br>
-                <div style="height: 88%;overflow:auto;">
+                <div style="overflow:auto;">
                     <draggable element="ul" v-model="data.item" class="nav" :options="dragOptions" @start="onDragStart" @end="onDragEnd">
                         <item v-for="model in data.item" :model="model" :current="current" :drag="drag"></item>
                     </draggable>
                 </div>
             </div>
 
-            <div class="col-md-9" style="height: 100%;overflow:auto;" v-if="current!=null">
+            <div class="col-md-9" style="overflow:auto;" v-if="current!=null">
                 <!-- name -->
                 <div class="form-group">
                     <div class="input-group">
