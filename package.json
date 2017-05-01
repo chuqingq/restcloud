@@ -1,5 +1,5 @@
 {
-  "name": "chuqq-postman",
+  "name": "restcloud",
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
@@ -25,7 +25,8 @@
         "username": "xuwentao",
         "password": "xuwentao"
       }
-    ]
+    ],
+    "urlprefix": "/restcloud"
   },
   "scripts": {
     "start": "screen -dmS chuqq-postman node server.js"

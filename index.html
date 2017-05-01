@@ -345,6 +345,8 @@
         //     aLink.dispatchEvent(evt);
         // }
 
+        const urlprefix = '/restcloud';
+
         const collectionStr = `{
             "variables": [],
             "info": {
@@ -518,7 +520,7 @@
                 methods: {
                     // 判断是否已登录
                     session () {
-                        $.getJSON('/api/session', function(data) {
+                        $.getJSON(urlprefix+'/api/session', function(data) {
                             console.log('/api/session username: ' + data.username);
                             if (data.username) {
                                 vm.username = data.username;
@@ -534,7 +536,7 @@
                         console.log('login: ');
                         var username = $('#username').val();
                         var password = $('#password').val();
-                        $.post('/api/user/login', {username, password}, function(data) {
+                        $.post(urlprefix+'/api/user/login', {username, password}, function(data) {
                             if (!data.ret) {
                                 vm.username = username;
                                 vm.session();
@@ -546,7 +548,7 @@
                     },
                     logout () {
                         console.log('logout: ');
-                        $.post('/api/user/logout', {}, function(data) {
+                        $.post(urlprefix+'/api/user/logout', {}, function(data) {
                             if (!data.ret) {
                                 vm.username = '';
                             }
@@ -697,7 +699,7 @@
                     save () {
                         // data保存到服务端
                         $.ajax({
-                            url: '/api/collection/saveall',
+                            url: urlprefix+'/api/collection/saveall',
                             type: "POST",
                             data: JSON.stringify(this.data),
                             dataType: "json",
@@ -763,7 +765,7 @@
                         var cur = vm.current;
                         vm.$delete(cur, 'response');// loading
                         $.ajax({
-                            url: '/api/collection/run',
+                            url: urlprefix+'/api/collection/run',
                             type: "POST",
                             data: JSON.stringify(this.current),
                             dataType: "json",

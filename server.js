@@ -88,7 +88,7 @@ function getUserCollection(username, callback) {
     });
 }
 
-app.post('/api/user/login', function(req, res) {
+app.post(config.urlprefix+'/api/user/login', function(req, res) {
     log.debug('/api/user/login username: ' + req.body.username);
     log.debug('/api/user/login password: ' + req.body.password);
     // 校验用户
@@ -114,7 +114,7 @@ app.post('/api/user/login', function(req, res) {
         });
     });
 });
-app.post('/api/user/logout', function(req, res) {
+app.post(config.urlprefix+'/api/user/logout', function(req, res) {
     log.debug('/api/user/logout username: ' + req.session.username);
     if (!req.session.username) {
         log.debug('/api/user/logout not longined');
@@ -124,7 +124,7 @@ app.post('/api/user/logout', function(req, res) {
     req.session.username = false;
     res.json({});
 });
-app.get('/api/session', function(req, res) {
+app.get(config.urlprefix+'/api/session', function(req, res) {
     if (!req.session.username) {
         res.json({ret:-1, msg: '会话无效'});
         return
@@ -137,7 +137,7 @@ app.get('/api/session', function(req, res) {
     });
 });
 // 获取数据
-app.get('/api/collection/get', function(req, res) {
+app.get(config.urlprefix+'/api/collection/get', function(req, res) {
     log.debug('/api/collection/get:');
     if (!req.session.username) {
         res.send({ret:-1,msg:'会话失效'})
@@ -148,7 +148,7 @@ app.get('/api/collection/get', function(req, res) {
     });
 });
 // 保存所有数据
-app.post('/api/collection/saveall', function(req, res) {
+app.post(config.urlprefix+'/api/collection/saveall', function(req, res) {
     log.debug('/api/collection/saveall: ');
     // 需要Content-Type是application/json
     if (!req.session.username) {
@@ -161,7 +161,7 @@ app.post('/api/collection/saveall', function(req, res) {
     res.json({});
 });
 // 运行一个请求
-app.post('/api/collection/run', function(req, res) {
+app.post(config.urlprefix+'/api/collection/run', function(req, res) {
     // 请求的body是个request，响应的body是response
     log.debug('/api/collection/run: ' + req.body.method + ' ' + req.body.name);
     if (!req.session.username) {
@@ -184,7 +184,11 @@ app.post('/api/collection/run', function(req, res) {
         res.send(res2.run.executions[0].response);
     });
 });
+app.get('/', function(req, res) {
+    res.redirect(config.urlprefix);
+});
+
 // html文件
-app.use(express.static('./'));
+app.use(config.urlprefix, express.static('./'));
 
 app.listen(8088);
