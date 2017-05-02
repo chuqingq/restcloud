@@ -8,7 +8,7 @@ var newman = require('newman');
 var config = require('./package.json').config;
 
 var Log = require('log')
-  , log = new Log('debug', fs.createWriteStream('chuqq-postman.log'));
+  , log = new Log('debug', fs.createWriteStream('restcloud.log'));
 
 const EMPTY_ITEM = {
     "name": "NEW FILE",
