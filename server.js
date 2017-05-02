@@ -65,6 +65,10 @@ const EMPTY_COLLECTION = {
     ]
 };
 
+process.on('uncaughtException', function(err) {
+    log.error('uncaughtException:', err);
+});
+
 var app = express();
 
 app.use(bodyParser.json());
