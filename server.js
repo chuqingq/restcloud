@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 
 var express = require('express');
 var session = require('express-session')
@@ -64,6 +65,9 @@ const EMPTY_COLLECTION = {
         }
     ]
 };
+
+log.info('config: ', config);
+log.info('__dirname: ', __dirname);
 
 process.on('uncaughtException', function(err) {
     log.error('uncaughtException:', err);
@@ -193,6 +197,9 @@ app.get('/', function(req, res) {
 });
 
 // html文件
-app.use(config.urlprefix, express.static('./'));
+app.use(config.urlprefix, express.static(__dirname));
 
-app.listen(8088);
+const port = 8088;
+app.listen(port);
+
+log.info('listen at 0.0.0.0:' + port);

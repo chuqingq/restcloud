@@ -7,6 +7,9 @@
     "log": "^1.4.0",
     "newman": "^3.5.2"
   },
+  "devDependencies": {
+    "pkg": "^3.0.1"
+  },
   "config": {
     "user": [
       {
@@ -29,6 +32,10 @@
     "urlprefix": "/restcloud"
   },
   "scripts": {
-    "start": "screen -dmS chuqq-postman node server.js"
+    "start": "screen -dmS chuqq-postman node server.js",
+    "build": "pkg server.js -t win -c package.json -o restcloud.exe"
+  },
+  "pkg": {
+    "assets": "./**"
   }
 }
