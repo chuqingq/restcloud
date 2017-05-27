@@ -713,7 +713,7 @@
                         }
                         // $(':focus').focusout();
                     },
-                    save () {
+                    save (sync) {
                         // data保存到服务端
                         $.ajax({
                             url: urlprefix+'/api/collection/saveall',
@@ -721,6 +721,7 @@
                             data: JSON.stringify(this.data),
                             dataType: "json",
                             contentType: "application/json; charset=utf-8",
+                            async: !sync,
                             success: function(data){
                                 console.log('/api/saveall res: ', data);
                                 vm.needSave = false;
@@ -819,7 +820,7 @@
             window.onbeforeunload = function() {
                 if (vm.needSave) {
                     // return '还未保存！';
-                    vm.save();
+                    vm.save(true);
                 }
             }
 
@@ -830,3 +831,4 @@
 </body>
 
 </html>
+
