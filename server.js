@@ -81,7 +81,7 @@ app.use(session({
     secret: 'chuqq',
     resave: false,
     saveUninitialized: false
-    // cookie TODO 是否要设置maxAge
+    // cookie 是否要设置maxAge
 }));
 
 // 获取user的collection，如果不存在，则返回空模板
@@ -176,7 +176,7 @@ app.post(config.urlprefix+'/api/collection/run', function(req, res) {
         res.json({ret:-1,msg:'会话失效'});
         return;
     }
-    // TODO collection做成一个模板
+    // collection做成一个模板
     var collection = JSON.parse(JSON.stringify(EMPTY_COLLECTION));
     collection.item = [req.body];
     // console.log('==== collection: ' + JSON.stringify(collection, null, '  '));
