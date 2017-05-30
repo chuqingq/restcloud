@@ -5,7 +5,8 @@
     "express": "^4.15.2",
     "express-session": "^1.15.2",
     "log": "^1.4.0",
-    "newman": "^3.5.2"
+    "newman": "^3.5.2",
+    "session-file-store": "^1.0.0"
   },
   "devDependencies": {
     "pkg": "^3.0.1"

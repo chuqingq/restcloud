@@ -3,6 +3,7 @@ var path = require('path');
 
 var express = require('express');
 var session = require('express-session')
+var FileStore = require('session-file-store')(session)
 var bodyParser = require('body-parser');
 var newman = require('newman');
 
@@ -80,7 +81,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
     secret: 'chuqq',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: new FileStore
     // cookie 是否要设置maxAge
 }));
 
