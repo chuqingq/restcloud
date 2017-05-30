@@ -30,6 +30,7 @@
         "password": "xuwentao"
       }
     ],
+    "remoteserver": "121.41.103.23",
     "urlprefix": "/restcloud"
   },
   "scripts": {
