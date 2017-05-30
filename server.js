@@ -1,5 +1,7 @@
 var fs = require('fs');
 var path = require('path');
+var http = require('http');
+var querystring = require('querystring');
 
 var express = require('express');
 var session = require('express-session')
@@ -101,28 +103,83 @@ function getUserCollection(username, callback) {
 app.post(config.urlprefix+'/api/user/login', function(req, res) {
     log.debug('/api/user/login username: ' + req.body.username);
     log.debug('/api/user/login password: ' + req.body.password);
-    // 校验用户
-    for (var i = 0; i < config.user.length; i++) {
-        var user = config.user[i];
-        if (user.username == req.body.username) {
-            if (user.password == req.body.password) {
-                req.session.username = req.body.username;
+
+    // TODO 如果是服务端，则直接校验用户名密码；如果是客户端，则向服务器校验
+    if (!config.remoteserver) {
+        // 服务端校验用户
+        for (var i = 0; i < config.user.length; i++) {
+            var user = config.user[i];
+            if (user.username == req.body.username) {
+                if (user.password == req.body.password) {
+                    req.session.username = req.body.username;
+                }
+                break;
             }
-            break;
         }
-    }
-    log.debug('username: ' + req.session.username);
-    if (!req.session.username) {
-        res.json({ret: -1, msg: '用户名或密码无效'})
-    }
-    req.session.save();
-    var collectionFile = req.session.username+'_collection.json';
-    getUserCollection(req.session.username, function(collection) {
-        res.json({
-            username: req.session.username,
-            collection: collection
+
+        log.debug('username: ' + req.session.username);
+        if (!req.session.username) {
+            res.json({ret: -1, msg: '用户名或密码无效'})
+        }
+        req.session.save();
+        var collectionFile = req.session.username+'_collection.json';
+        getUserCollection(req.session.username, function(collection) {
+            res.json({
+                username: req.session.username,
+                collection: collection
+            });
         });
-    });
+    } else {
+        // 客户端校验
+        const options = {
+            host: config.remoteserver,
+            path: '/restcloud/api/user/login',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }
+        var req2 = http.request(options, function(res2) {
+            // TODO 判断statuscode
+            var body = '';
+            res2.on('data', (chunk) => {
+                // console.log(`BODY: ${chunk}`);
+                body += chunk;
+            });
+            res2.on('end', () => {
+                // console.log('No more data in response.');
+                var bodyJson = JSON.parse(body);
+                log.debug('remote response: ', bodyJson)
+                if (bodyJson.ret) {
+                    res.json(bodyJson);
+                    return;
+                }
+                req.session.username = req.body.username;
+                log.debug('username: ' + req.session.username);
+                if (!req.session.username) {
+                    res.json({ret: -1, msg: '用户名或密码无效'})
+                }
+                req.session.save();
+                // TODO 暂时只用服务端的collection。后面要比较哪个更新，用更新的，或者让用户解决冲突
+                res.json(bodyJson);
+                // var collectionFile = req.session.username+'_collection.json';
+                // getUserCollection(req.session.username, function(collection) {
+                //     res.json({
+                //         username: req.session.username,
+                //         collection: collection
+                //     });
+                // });
+            });
+
+        });
+        req2.on('error', (e) => {
+            log.error(`http Got error: ${e.message}`);
+        });
+        req2.write(querystring.stringify({
+            username: req.body.username,
+            password: req.body.password
+        }));
+        req2.end();
+    }
+    
 });
 app.post(config.urlprefix+'/api/user/logout', function(req, res) {
     log.debug('/api/user/logout username: ' + req.session.username);
