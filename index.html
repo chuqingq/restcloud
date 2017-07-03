@@ -274,7 +274,7 @@
                                 <ul class="nav nav-tabs" role="tablist">
                                   <li @click="showResponseBody('header');" :class="{active: current.showResponseBody=='header'}"><a href="javascript:void(0);">Headers <span class="badge">{{current.response[0].header.length}}</span></a></li>
                                   <li @click="showResponseBody('body');" :class="{active: current.showResponseBody==null||current.showResponseBody=='body'}"><a href="javascript:void(0);">Body</a></li>
-                                  <li @click="showResponseBody('tests');" :class="{active: current.showResponseBody=='tests'}"><a href="javascript:void(0);">Tests</a></li>
+                                  <li @click="showResponseBody('tests');" :class="{active: current.showResponseBody=='tests'}"><a href="javascript:void(0);">Tests <span class="badge">{{successAssertionsCount}}/{{current.assertions.length}}</span></a></li><!-- TODO 加上用例通过数量 -->
                                 </ul>
                             </div>
                             <!-- response header -->
@@ -294,8 +294,12 @@
 
                             <!-- response tests -->
                             <div class="form-group" v-if="current.showResponseBody=='tests'">
-                                <!-- TODO -->
-                                <textarea class="form-control" style="resize: vertical;" rows=8 readonly>{{current.response[0].tests}}</textarea>
+                                <div class="form-group" v-for="(a, index) in current.assertions">
+                                    <div class="input-group">
+                                        <span class="label" :class="{'label-success': a.error == null, 'label-danger': a.error != null}">{{a.error == null ? 'PASS' : 'FAIL'}}</span><!-- TODO 加上颜色 -->
+                                        <span> {{a.assertion}}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="panel-body" v-else>
@@ -483,7 +487,8 @@
                     current: null,
                     data: {item: []},
                     drag: false, // 表示正在拖拽
-                    globals: {}
+                    globals: {},
+                    summary: null // TODO
                 },
                 computed: {
                     // vuedraggable
@@ -505,6 +510,15 @@
                         else {
                             return 'tests';
                         }
+                    },
+                    successAssertionsCount: function() {
+                        var count = 0;
+                        this.current.assertions.forEach(function(assertion) {
+                            if (assertion.error == null) {
+                                count += 1;
+                            }
+                        });
+                        return count;
                     }
                 },
                 watch: {
@@ -795,7 +809,10 @@
                                     return;
                                 }
                                 vm.$set(cur, 'response', [data]);
+                                vm.$set(cur, 'assertions', res.run.executions[0].assertions);
                                 vm.$set(vm, 'globals', res.globals);
+                                // TODO
+                                vm.$set(vm, 'summary', res);
                             }
                         });
                     },
