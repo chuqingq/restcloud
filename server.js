@@ -236,19 +236,25 @@ app.post(config.urlprefix+'/api/collection/run', function(req, res) {
         return;
     }
     // collection做成一个模板
-    var collection = JSON.parse(JSON.stringify(EMPTY_COLLECTION));
-    collection.item = [req.body];
+    // var collection = JSON.parse(JSON.stringify(EMPTY_COLLECTION));
+    // collection.item = [req.body];
+    var data = req.body;
     // console.log('==== collection: ' + JSON.stringify(collection, null, '  '));
 
     newman.run({
-        collection: collection,
+        collection: data.collection,
+        environment: data.environment,
+        globals: data.globals,
         reporters: 'json'
-    }, function(err, res2) {
-        log.debug('newman.run err: ', err, ' res: ', res2);
+    }, function(err, summary) {
+        log.debug('newman.run err: ', err, ' summary: ', summary);
         if (err) {
             log.error('newman.run error: ', err); /*TODO 返回错误*/
         }
-        res.send(res2.run.executions[0].response);
+        // res.send(res2.run.executions[0].response);
+        res.send(summary);
+        log.debug("summary.environment: " + JSON.stringify(summary.environment));
+        log.debug("summary.globals: " + JSON.stringify(summary.globals));
     });
 });
 app.get('/', function(req, res) {
