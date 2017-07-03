@@ -274,7 +274,7 @@
                                 <ul class="nav nav-tabs" role="tablist">
                                   <li @click="showResponseBody('header');" :class="{active: current.showResponseBody=='header'}"><a href="javascript:void(0);">Headers <span class="badge">{{current.response[0].header.length}}</span></a></li>
                                   <li @click="showResponseBody('body');" :class="{active: current.showResponseBody==null||current.showResponseBody=='body'}"><a href="javascript:void(0);">Body</a></li>
-                                  <li @click="showResponseBody('tests');" :class="{active: current.showResponseBody=='tests'}"><a href="javascript:void(0);">Tests <span class="badge">{{successAssertionsCount}}/{{current.assertions.length}}</span></a></li><!-- TODO 加上用例通过数量 -->
+                                  <li @click="showResponseBody('tests');" :class="{active: current.showResponseBody=='tests'}"><a href="javascript:void(0);">Tests <span class="badge">{{assertionsRatio}}</span></a></li><!-- TODO 加上用例通过数量 -->
                                 </ul>
                             </div>
                             <!-- response header -->
@@ -511,14 +511,18 @@
                             return 'tests';
                         }
                     },
-                    successAssertionsCount: function() {
-                        var count = 0;
+                    assertionsRatio: function() {
+                        if (this.current.assertions == null) {
+                            return '';
+                        }
+                        var total = this.current.assertions.length;
+                        var success = 0;
                         this.current.assertions.forEach(function(assertion) {
                             if (assertion.error == null) {
-                                count += 1;
+                                success += 1;
                             }
                         });
-                        return count;
+                        return success+'/'+total;
                     }
                 },
                 watch: {
@@ -849,4 +853,5 @@
 </body>
 
 </html>
+
 
